@@ -2,6 +2,18 @@
 // NextGen Dev - Main Script
 // ========================================
 
+// Patch de Lucide pour éviter que les icônes (ex: bottom-nav) ne disparaissent
+// lors du re-rendu asynchrone des autres éléments sur la page
+if (typeof lucide !== 'undefined' && !lucide.__patched) {
+  const originalCreateIcons = lucide.createIcons;
+  lucide.createIcons = function(options) {
+    originalCreateIcons(options);
+    // On retire l'attribut pour que Lucide ne tente pas de remplacer un SVG par un SVG vide au prochain appel
+    document.querySelectorAll('svg[data-lucide]').forEach(el => el.removeAttribute('data-lucide'));
+  };
+  lucide.__patched = true;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize Lucide icons
   if (typeof lucide !== 'undefined') {

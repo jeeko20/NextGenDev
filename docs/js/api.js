@@ -2,12 +2,14 @@
 // NextGen Dev - API Client
 // ========================================
 
-const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-  ? 'http://localhost:5000/api' 
-  : '/api';
+let API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? 'http://localhost:5000/api'
+  : 'https://nextgendev-n85n.onrender.com/api';
+
+const ONLINE_API_URL = 'https://nextgendev-n85n.onrender.com/api';
 
 class API {
-  static async request(endpoint, options = {}) {
+  static async request(endpoint, options = {}, isRetry = false) {
     const url = `${API_BASE_URL}${endpoint}`;
     
     const config = {
@@ -38,6 +40,12 @@ class API {
       
       return data;
     } catch (error) {
+      // Basculement automatique si l'API localhost est injoignable
+      if (!isRetry && API_BASE_URL === 'http://localhost:5000/api') {
+        console.warn("Serveur local injoignable. Basculement sur l'API de secours (Render)...");
+        API_BASE_URL = ONLINE_API_URL;
+        return this.request(endpoint, options, true);
+      }
       console.error('API Error:', error);
       throw error;
     }
