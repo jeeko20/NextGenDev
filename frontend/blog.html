@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog - NextGen Dev</title>
+  <meta name="description" content="Actualités, tutoriels et réflexions tech par NextGen Dev.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+</head>
+<body>
+  <div id="nav-placeholder"></div>
+
+  <!-- Hero -->
+  <section class="hero" style="min-height: 50vh;">
+    <div class="hero-bg">
+      <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1920&q=80" alt="Blog background">
+    </div>
+    <div class="container">
+      <div class="hero-content">
+        <div>
+          <span class="hero-label">NOTRE BLOG</span>
+          <h1 class="hero-title">Notre <span class="gradient-text">Blog</span></h1>
+          <p class="hero-subtitle">Actualités, tutoriels et réflexions tech</p>
+          <div class="filters" style="justify-content: flex-start; flex-wrap: wrap; gap: 10px; margin-top: 24px;">
+            <button class="filter-btn active" data-filter="all" onclick="filterBlog('all')">Tous</button>
+            <button class="filter-btn" data-filter="Mobile" onclick="filterBlog('Mobile')">Mobile</button>
+            <button class="filter-btn" data-filter="Technologie" onclick="filterBlog('Technologie')">Tech</button>
+            <button class="filter-btn" data-filter="Tutoriel" onclick="filterBlog('Tutoriel')">Tutoriels</button>
+            <button class="filter-btn" data-filter="Photographie" onclick="filterBlog('Photographie')">Photo</button>
+          </div>
+        </div>
+        <div class="hero-lottie">
+          <div class="hero-lottie-container" data-lottie="animations/empty.json"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Blog Grid -->
+  <section class="section" style="background: var(--gris-fonce);">
+    <div class="container">
+      <div class="blog-grid" id="blog-grid">
+        <!-- Loaded dynamically -->
+      </div>
+    </div>
+  </section>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    async function loadBlog(category = 'all') {
+      const grid = document.getElementById('blog-grid');
+      if (!grid) return;
+      
+      Utils.showLoading(grid);
+      
+      try {
+        const cat = category === 'all' ? '' : category;
+        const posts = await API.getBlogPosts('published', cat);
+        
+        if (posts.length === 0) {
+          Utils.showEmpty(grid, 'Aucun article dans cette catégorie');
+          return;
+        }
+        
+        renderBlog(posts);
+      } catch (error) {
+        console.error('Error loading blog:', error);
+        grid.innerHTML = '<p style="text-align:center;color:var(--gris-texte);padding:40px;">Erreur de chargement. Veuillez réessayer.</p>';
+      }
+    }
+    
+    function renderBlog(posts) {
+      const grid = document.getElementById('blog-grid');
+      
+      grid.innerHTML = posts.map(post => `
+        <article class="blog-card" data-animate="fadeUp">
+          <div class="blog-image">
+            <img src="${post.featured_image || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800'}" alt="${post.title}" loading="lazy">
+          </div>
+          <div class="blog-body">
+            <div class="blog-meta">
+              <span class="category">${post.category || 'Général'}</span>
+              <span>${Utils.formatDate(post.created_at)}</span>
+            </div>
+            <h3>${post.title}</h3>
+            <p>${post.excerpt || Utils.truncate(post.content, 150)}</p>
+            <a href="#" class="blog-link" onclick="showArticle(${post.id}); return false;">Lire la suite →</a>
+          </div>
+        </article>
+      `).join('');
+      
+      lucide.createIcons();
+    }
+    
+    function filterBlog(category) {
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.filter === category);
+      });
+      loadBlog(category);
+    }
+    
+    function showArticle(id) {
+      // For now, show a toast. In a full app, this would navigate to article detail
+      Utils.toast('Navigation vers l\'article...', 'info');
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      loadBlog();
+    });
+  </script>
+</body>
+</html>

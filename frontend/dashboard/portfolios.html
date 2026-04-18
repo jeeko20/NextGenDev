@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolios - Dashboard NextGen Dev</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="dashboard">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <a href="../index.html" class="sidebar-logo">NEXTGEN <span>DEV</span></a>
+      </div>
+      <nav class="sidebar-nav">
+        <ul>
+          <li><a href="index.html"><i data-lucide="layout-dashboard"></i> Vue d'ensemble</a></li>
+          <li><a href="portfolios.html" class="active"><i data-lucide="briefcase"></i> Portfolios</a></li>
+          <li><a href="gallery.html"><i data-lucide="image"></i> Galerie</a></li>
+          <li><a href="events.html"><i data-lucide="calendar"></i> Événements</a></li>
+          <li><a href="blog.html"><i data-lucide="file-text"></i> Blog</a></li>
+          <li><a href="messages.html"><i data-lucide="mail"></i> Messages</a></li>
+          <li><a href="settings.html"><i data-lucide="settings"></i> Paramètres</a></li>
+        </ul>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar">A</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="user-name">Admin</div>
+            <div class="sidebar-user-role">Administrateur</div>
+          </div>
+          <button onclick="Auth.logout()" style="color: var(--gris-texte); cursor: pointer;">
+            <i data-lucide="log-out" style="width: 18px; height: 18px;"></i>
+          </button>
+        </div>
+      </div>
+    </aside>
+    
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+    
+    <main class="main-content">
+      <header class="topbar">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()">
+            <i data-lucide="menu" style="width: 20px; height: 20px;"></i>
+          </button>
+          <h1 class="topbar-title">Portfolios</h1>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-primary btn-sm" onclick="openModal()">
+            <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+            Ajouter un projet
+          </button>
+        </div>
+      </header>
+      
+      <div class="content">
+        <div class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Image</th>
+                <th>Titre</th>
+                <th>Catégorie</th>
+                <th>Technologies</th>
+                <th>Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="portfolios-table-body">
+              <!-- Loaded dynamically -->
+            </tbody>
+          </table>
+          <div class="pagination" id="pagination">
+            <!-- Loaded dynamically -->
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modal-title">Ajouter un projet</h3>
+        <button class="modal-close" onclick="closeModal()">
+          <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="portfolio-form">
+          <input type="hidden" id="portfolio-id">
+          <div class="form-group">
+            <label for="title">Titre *</label>
+            <input type="text" id="title" required placeholder="Nom du projet">
+          </div>
+          <div class="form-group">
+            <label for="description">Description *</label>
+            <textarea id="description" rows="3" required placeholder="Description du projet"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="category">Catégorie *</label>
+            <select id="category" required>
+              <option value="Sites Web">Sites Web</option>
+              <option value="Apps Mobiles">Apps Mobiles</option>
+              <option value="Apps Desktop">Apps Desktop</option>
+              <option value="Design Graphique">Design Graphique</option>
+              <option value="Photographie">Photographie</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Technologies</label>
+            <div class="tags-input" id="tags-container">
+              <input type="text" id="tech-input" placeholder="Ajouter une techno (Entrée)">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="project-url">Lien du projet</label>
+            <input type="url" id="project-url" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label>Image</label>
+            <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
+              <i data-lucide="upload-cloud"></i>
+              <p>Glissez une image ici ou cliquez pour sélectionner</p>
+              <span class="upload-hint">JPG, PNG, WEBP - Max 10MB</span>
+              <input type="file" id="file-input" accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
+            </div>
+            <div class="upload-preview" id="upload-preview" style="display: none;">
+              <img id="preview-img" src="" alt="Preview">
+              <button type="button" class="upload-preview-remove" onclick="removePreview()">
+                <i data-lucide="x" style="width: 14px; height: 14px;"></i>
+              </button>
+            </div>
+            <div class="upload-progress" id="upload-progress" style="display: none;">
+              <div class="upload-progress-bar" id="progress-bar"></div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+        <button class="btn btn-primary" onclick="savePortfolio()" id="save-btn">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-overlay" id="delete-modal">
+    <div class="modal" style="max-width: 400px;">
+      <div class="modal-header">
+        <h3>Confirmer la suppression</h3>
+        <button class="modal-close" onclick="closeDeleteModal()">
+          <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="color: var(--gris-texte);">Êtes-vous sûr de vouloir supprimer ce projet ? Cette action est irréversible.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeDeleteModal()">Annuler</button>
+        <button class="btn btn-danger" onclick="confirmDelete()">Supprimer</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script>
+    if (!Auth.isAuthenticated()) window.location.href = '../login.html';
+    lucide.createIcons();
+    
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('active');
+      document.getElementById('sidebar-overlay').classList.toggle('active');
+    }
+    
+    let portfolios = [];
+    let currentPage = 1;
+    let deleteId = null;
+    let uploadedImageUrl = '';
+    let tags = [];
+    
+    // Tags input
+    document.getElementById('tech-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const value = e.target.value.trim();
+        if (value && !tags.includes(value)) {
+          tags.push(value);
+          renderTags();
+          e.target.value = '';
+        }
+      }
+    });
+    
+    function renderTags() {
+      const container = document.getElementById('tags-container');
+      const input = document.getElementById('tech-input');
+      container.innerHTML = '';
+      tags.forEach((tag, i) => {
+        const span = document.createElement('span');
+        span.className = 'tag';
+        span.innerHTML = `${tag} <button type="button" onclick="removeTag(${i})"><i data-lucide="x" style="width:12px;height:12px;"></i></button>`;
+        container.appendChild(span);
+      });
+      container.appendChild(input);
+      lucide.createIcons();
+    }
+    
+    function removeTag(index) {
+      tags.splice(index, 1);
+      renderTags();
+    }
+    
+    // Load portfolios
+    async function loadPortfolios() {
+      try {
+        portfolios = await API.getPortfolios();
+        renderTable();
+      } catch (error) {
+        Utils.toast('Erreur de chargement', 'error');
+      }
+    }
+    
+    function renderTable() {
+      const tbody = document.getElementById('portfolios-table-body');
+      const pageSize = 10;
+      const start = (currentPage - 1) * pageSize;
+      const pageItems = portfolios.slice(start, start + pageSize);
+      
+      if (pageItems.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--gris-texte);padding:40px;">Aucun projet</td></tr>';
+        document.getElementById('pagination').innerHTML = '';
+        return;
+      }
+      
+      tbody.innerHTML = pageItems.map(p => `
+        <tr>
+          <td><img src="${p.image_url || 'https://via.placeholder.com/60x40'}" alt="${p.title}" class="cell-image"></td>
+          <td><strong>${p.title}</strong></td>
+          <td><span class="badge badge-published">${p.category}</span></td>
+          <td>${(p.technologies || []).slice(0, 3).join(', ')}</td>
+          <td>${Utils.formatDateShort(p.created_at)}</td>
+          <td>
+            <div class="cell-actions">
+              <button class="btn-edit" onclick="editPortfolio(${p.id})">
+                <i data-lucide="pencil" style="width:14px;height:14px;"></i>
+              </button>
+              <button class="btn-delete" onclick="deletePortfolio(${p.id})">
+                <i data-lucide="trash-2" style="width:14px;height:14px;"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+      
+      // Pagination
+      const totalPages = Math.ceil(portfolios.length / pageSize);
+      let paginationHTML = '';
+      if (currentPage > 1) paginationHTML += `<button onclick="changePage(${currentPage - 1})"><i data-lucide="chevron-left" style="width:16px;height:16px;"></i></button>`;
+      for (let i = 1; i <= totalPages; i++) {
+        paginationHTML += `<button class="${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+      }
+      if (currentPage < totalPages) paginationHTML += `<button onclick="changePage(${currentPage + 1})"><i data-lucide="chevron-right" style="width:16px;height:16px;"></i></button>`;
+      document.getElementById('pagination').innerHTML = paginationHTML;
+      
+      lucide.createIcons();
+    }
+    
+    function changePage(page) {
+      currentPage = page;
+      renderTable();
+    }
+    
+    // Modal functions
+    function openModal(id = null) {
+      document.getElementById('modal').classList.add('active');
+      document.getElementById('modal-title').textContent = id ? 'Modifier le projet' : 'Ajouter un projet';
+      
+      if (id) {
+        const p = portfolios.find(x => x.id === id);
+        if (p) {
+          document.getElementById('portfolio-id').value = p.id;
+          document.getElementById('title').value = p.title;
+          document.getElementById('description').value = p.description;
+          document.getElementById('category').value = p.category;
+          document.getElementById('project-url').value = p.project_url || '';
+          tags = [...(p.technologies || [])];
+          renderTags();
+          uploadedImageUrl = p.image_url || '';
+          if (uploadedImageUrl) {
+            document.getElementById('preview-img').src = uploadedImageUrl;
+            document.getElementById('upload-preview').style.display = 'block';
+          }
+        }
+      } else {
+        document.getElementById('portfolio-form').reset();
+        document.getElementById('portfolio-id').value = '';
+        tags = [];
+        renderTags();
+        uploadedImageUrl = '';
+        removePreview();
+      }
+    }
+    
+    function closeModal() {
+      document.getElementById('modal').classList.remove('active');
+    }
+    
+    // File upload
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        document.getElementById('preview-img').src = e.target.result;
+        document.getElementById('upload-preview').style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+      
+      // Upload to Cloudinary
+      uploadFile(file);
+    }
+    
+    async function uploadFile(file) {
+      const progress = document.getElementById('upload-progress');
+      const bar = document.getElementById('progress-bar');
+      progress.style.display = 'block';
+      bar.style.width = '30%';
+      
+      try {
+        const result = await API.uploadImage(file, 'nextgen-dev/portfolios');
+        uploadedImageUrl = result.url;
+        bar.style.width = '100%';
+        setTimeout(() => { progress.style.display = 'none'; }, 500);
+        Utils.toast('Image uploadée !', 'success');
+      } catch (error) {
+        Utils.toast('Erreur upload', 'error');
+        progress.style.display = 'none';
+      }
+    }
+    
+    function removePreview() {
+      document.getElementById('upload-preview').style.display = 'none';
+      document.getElementById('preview-img').src = '';
+      uploadedImageUrl = '';
+      document.getElementById('file-input').value = '';
+    }
+    
+    // Save portfolio
+    async function savePortfolio() {
+      const id = document.getElementById('portfolio-id').value;
+      const data = {
+        title: document.getElementById('title').value,
+        description: document.getElementById('description').value,
+        category: document.getElementById('category').value,
+        technologies: tags,
+        project_url: document.getElementById('project-url').value,
+        image_url: uploadedImageUrl
+      };
+      
+      if (!data.title || !data.description) {
+        Utils.toast('Veuillez remplir les champs obligatoires', 'warning');
+        return;
+      }
+      
+      try {
+        if (id) {
+          await API.updatePortfolio(id, data);
+          Utils.toast('Projet mis à jour !', 'success');
+        } else {
+          await API.createPortfolio(data);
+          Utils.toast('Projet créé !', 'success');
+        }
+        closeModal();
+        loadPortfolios();
+      } catch (error) {
+        Utils.toast('Erreur lors de l\'enregistrement', 'error');
+      }
+    }
+    
+    function editPortfolio(id) {
+      openModal(id);
+    }
+    
+    function deletePortfolio(id) {
+      deleteId = id;
+      document.getElementById('delete-modal').classList.add('active');
+    }
+    
+    function closeDeleteModal() {
+      document.getElementById('delete-modal').classList.remove('active');
+      deleteId = null;
+    }
+    
+    async function confirmDelete() {
+      if (!deleteId) return;
+      try {
+        await API.deletePortfolio(deleteId);
+        Utils.toast('Projet supprimé !', 'success');
+        loadPortfolios();
+      } catch (error) {
+        Utils.toast('Erreur de suppression', 'error');
+      }
+      closeDeleteModal();
+    }
+    
+    // Drag & drop
+    const uploadZone = document.getElementById('upload-zone');
+    uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.classList.add('dragover'); });
+    uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+    uploadZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadZone.classList.remove('dragover');
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          document.getElementById('preview-img').src = ev.target.result;
+          document.getElementById('upload-preview').style.display = 'block';
+        };
+        reader.readAsDataURL(files[0]);
+        uploadFile(files[0]);
+      }
+    });
+    
+    document.addEventListener('DOMContentLoaded', loadPortfolios);
+  </script>
+</body>
+</html>

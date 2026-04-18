@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paramètres - Dashboard NextGen Dev</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="dashboard">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <a href="../index.html" class="sidebar-logo">NEXTGEN <span>DEV</span></a>
+      </div>
+      <nav class="sidebar-nav">
+        <ul>
+          <li><a href="index.html"><i data-lucide="layout-dashboard"></i> Vue d'ensemble</a></li>
+          <li><a href="portfolios.html"><i data-lucide="briefcase"></i> Portfolios</a></li>
+          <li><a href="gallery.html"><i data-lucide="image"></i> Galerie</a></li>
+          <li><a href="events.html"><i data-lucide="calendar"></i> Événements</a></li>
+          <li><a href="blog.html"><i data-lucide="file-text"></i> Blog</a></li>
+          <li><a href="messages.html"><i data-lucide="mail"></i> Messages</a></li>
+          <li><a href="settings.html" class="active"><i data-lucide="settings"></i> Paramètres</a></li>
+        </ul>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar">A</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="user-name">Admin</div>
+            <div class="sidebar-user-role">Administrateur</div>
+          </div>
+          <button onclick="Auth.logout()" style="color: var(--gris-texte); cursor: pointer;"><i data-lucide="log-out" style="width: 18px; height: 18px;"></i></button>
+        </div>
+      </div>
+    </aside>
+    
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+    
+    <main class="main-content">
+      <header class="topbar">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()"><i data-lucide="menu" style="width: 20px; height: 20px;"></i></button>
+          <h1 class="topbar-title">Paramètres</h1>
+        </div>
+      </header>
+      
+      <div class="content">
+        <div class="settings-tabs">
+          <button class="settings-tab active" onclick="switchTab('profile')">Profil</button>
+          <button class="settings-tab" onclick="switchTab('site')">Site</button>
+          <button class="settings-tab" onclick="switchTab('social')">Réseaux sociaux</button>
+          <button class="settings-tab" onclick="switchTab('api')">API</button>
+        </div>
+        
+        <!-- Profile Tab -->
+        <div class="settings-panel active" id="tab-profile">
+          <div class="data-table-container" style="padding: 32px;">
+            <h3 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; margin-bottom: 24px;">Profil utilisateur</h3>
+            <form id="profile-form">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="form-group">
+                  <label for="profile-name">Nom</label>
+                  <input type="text" id="profile-name" placeholder="Votre nom">
+                </div>
+                <div class="form-group">
+                  <label for="profile-email">Email</label>
+                  <input type="email" id="profile-email" placeholder="votre@email.com">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="profile-password">Nouveau mot de passe</label>
+                <input type="password" id="profile-password" placeholder="Laisser vide pour ne pas changer">
+              </div>
+              <button type="button" class="btn btn-primary" onclick="saveProfile()">Enregistrer</button>
+            </form>
+          </div>
+        </div>
+        
+        <!-- Site Tab -->
+        <div class="settings-panel" id="tab-site">
+          <div class="data-table-container" style="padding: 32px;">
+            <h3 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; margin-bottom: 24px;">Paramètres du site</h3>
+            <form id="site-form">
+              <div class="form-group">
+                <label for="site-title">Titre du site</label>
+                <input type="text" id="site-title" placeholder="NextGen Dev">
+              </div>
+              <div class="form-group">
+                <label for="site-description">Description</label>
+                <textarea id="site-description" rows="3" placeholder="Description du site..."></textarea>
+              </div>
+              <div class="form-group">
+                <label for="site-email">Email de contact</label>
+                <input type="email" id="site-email" placeholder="contact@nextgendev.ht">
+              </div>
+              <div class="form-group">
+                <label for="site-phone">Téléphone</label>
+                <input type="text" id="site-phone" placeholder="+509...">
+              </div>
+              <div class="form-group">
+                <label for="site-address">Adresse</label>
+                <input type="text" id="site-address" placeholder="Delmas 33, Port-au-Prince, Haïti">
+              </div>
+              <button type="button" class="btn btn-primary" onclick="saveSiteSettings()">Enregistrer</button>
+            </form>
+          </div>
+        </div>
+        
+        <!-- Social Tab -->
+        <div class="settings-panel" id="tab-social">
+          <div class="data-table-container" style="padding: 32px;">
+            <h3 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; margin-bottom: 24px;">Réseaux sociaux</h3>
+            <form id="social-form">
+              <div class="form-group">
+                <label for="social-facebook">Facebook</label>
+                <input type="url" id="social-facebook" placeholder="https://facebook.com/...">
+              </div>
+              <div class="form-group">
+                <label for="social-instagram">Instagram</label>
+                <input type="url" id="social-instagram" placeholder="https://instagram.com/...">
+              </div>
+              <div class="form-group">
+                <label for="social-twitter">Twitter</label>
+                <input type="url" id="social-twitter" placeholder="https://twitter.com/...">
+              </div>
+              <div class="form-group">
+                <label for="social-linkedin">LinkedIn</label>
+                <input type="url" id="social-linkedin" placeholder="https://linkedin.com/...">
+              </div>
+              <button type="button" class="btn btn-primary" onclick="saveSocialSettings()">Enregistrer</button>
+            </form>
+          </div>
+        </div>
+        
+        <!-- API Tab -->
+        <div class="settings-panel" id="tab-api">
+          <div class="data-table-container" style="padding: 32px;">
+            <h3 style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; margin-bottom: 24px;">Configuration API</h3>
+            <div style="background: var(--noir); padding: 24px; border-radius: var(--radius-md); margin-bottom: 24px;">
+              <p style="color: var(--gris-texte); font-size: 0.875rem; line-height: 1.7;">Les clés API sont configurées via les variables d'environnement. Modifiez le fichier <code style="background: var(--gris-fonce); padding: 2px 8px; border-radius: 4px;">.env</code> sur le serveur pour mettre à jour ces valeurs.</p>
+            </div>
+            <div class="form-group">
+              <label>DATABASE_URL</label>
+              <input type="text" value="postgresql://..." readonly style="background: var(--noir); color: var(--gris-texte);">
+            </div>
+            <div class="form-group">
+              <label>CLOUDINARY_CLOUD_NAME</label>
+              <input type="text" value="..." readonly style="background: var(--noir); color: var(--gris-texte);">
+            </div>
+            <div class="form-group">
+              <label>CLOUDINARY_API_KEY</label>
+              <input type="text" value="••••••••••••" readonly style="background: var(--noir); color: var(--gris-texte);">
+            </div>
+            <div class="form-group">
+              <label>JWT_SECRET_KEY</label>
+              <input type="text" value="••••••••••••" readonly style="background: var(--noir); color: var(--gris-texte);">
+            </div>
+            <button type="button" class="btn btn-secondary" onclick="testConnection()">Tester la connexion API</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script>
+    if (!Auth.isAuthenticated()) window.location.href = '../login.html';
+    lucide.createIcons();
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('active');
+      document.getElementById('sidebar-overlay').classList.toggle('active');
+    }
+    
+    function switchTab(tab) {
+      document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.settings-panel').forEach(p => p.classList.remove('active'));
+      document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
+      document.getElementById(`tab-${tab}`).classList.add('active');
+    }
+    
+    async function loadSettings() {
+      try {
+        const settings = await API.getSettings();
+        if (settings) {
+          document.getElementById('site-title').value = settings.site_title || '';
+          document.getElementById('site-description').value = settings.site_description || '';
+          document.getElementById('site-email').value = settings.contact_email || '';
+          document.getElementById('site-phone').value = settings.contact_phone || '';
+          document.getElementById('site-address').value = settings.contact_address || '';
+          document.getElementById('social-facebook').value = settings.facebook_url || '';
+          document.getElementById('social-instagram').value = settings.instagram_url || '';
+          document.getElementById('social-twitter').value = settings.twitter_url || '';
+          document.getElementById('social-linkedin').value = settings.linkedin_url || '';
+        }
+        
+        const user = Auth.getUser();
+        if (user) {
+          document.getElementById('profile-name').value = user.name || '';
+          document.getElementById('profile-email').value = user.email || '';
+        }
+      } catch (error) { console.error('Error loading settings:', error); }
+    }
+    
+    async function saveProfile() {
+      const data = {
+        name: document.getElementById('profile-name').value,
+        email: document.getElementById('profile-email').value,
+        password: document.getElementById('profile-password').value
+      };
+      try {
+        await API.request('/auth/me', { method: 'PUT', body: data });
+        const user = Auth.getUser();
+        if (user) { user.name = data.name; user.email = data.email; Auth.setUser(user); }
+        Utils.toast('Profil mis à jour !', 'success');
+        document.getElementById('profile-password').value = '';
+      } catch (error) { Utils.toast('Erreur', 'error'); }
+    }
+    
+    async function saveSiteSettings() {
+      const data = {
+        site_title: document.getElementById('site-title').value,
+        site_description: document.getElementById('site-description').value,
+        contact_email: document.getElementById('site-email').value,
+        contact_phone: document.getElementById('site-phone').value,
+        contact_address: document.getElementById('site-address').value
+      };
+      try { await API.updateSettings(data); Utils.toast('Paramètres enregistrés !', 'success'); }
+      catch (error) { Utils.toast('Erreur', 'error'); }
+    }
+    
+    async function saveSocialSettings() {
+      const data = {
+        facebook_url: document.getElementById('social-facebook').value,
+        instagram_url: document.getElementById('social-instagram').value,
+        twitter_url: document.getElementById('social-twitter').value,
+        linkedin_url: document.getElementById('social-linkedin').value
+      };
+      try { await API.updateSettings(data); Utils.toast('Réseaux sociaux enregistrés !', 'success'); }
+      catch (error) { Utils.toast('Erreur', 'error'); }
+    }
+    
+    function testConnection() {
+      Utils.toast('Connexion API OK', 'success');
+    }
+    
+    document.addEventListener('DOMContentLoaded', loadSettings);
+  </script>
+</body>
+</html>

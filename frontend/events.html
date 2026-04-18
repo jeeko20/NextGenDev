@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Événements - NextGen Dev</title>
+  <meta name="description" content="Ateliers, hackathons et rencontres tech organisés par NextGen Dev.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+</head>
+<body>
+  <div id="nav-placeholder"></div>
+
+  <!-- Hero -->
+  <section class="hero" style="min-height: 50vh;">
+    <div class="hero-bg">
+      <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1920&q=80" alt="Events background">
+    </div>
+    <div class="container">
+      <div class="hero-content">
+        <div>
+          <span class="hero-label">NOS ÉVÉNEMENTS</span>
+          <h1 class="hero-title">Nos <span class="gradient-text">Événements</span></h1>
+          <p class="hero-subtitle">Ateliers, hackathons et rencontres tech</p>
+          <div class="filters" style="justify-content: flex-start; flex-wrap: wrap; gap: 10px; margin-top: 24px;">
+            <button class="filter-btn active" data-filter="all" onclick="filterEvents('all')">Tous</button>
+            <button class="filter-btn" data-filter="À venir" onclick="filterEvents('À venir')">À venir</button>
+            <button class="filter-btn" data-filter="Terminé" onclick="filterEvents('Terminé')">Terminés</button>
+          </div>
+        </div>
+        <div class="hero-lottie">
+          <div class="hero-lottie-container" data-lottie="animations/empty.json"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Events Timeline -->
+  <section class="section" style="background: var(--gris-fonce);">
+    <div class="container">
+      <div class="events-timeline" id="events-container">
+        <!-- Loaded dynamically -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact CTA -->
+  <section class="section" data-animate="fadeUp">
+    <div class="container">
+      <div class="contact-cta">
+        <h2>Proposer un événement ?</h2>
+        <p>Contactez-nous pour collaborer sur un atelier ou une conférence</p>
+        <a href="contact.html" class="btn btn-white btn-lg">Nous contacter</a>
+      </div>
+    </div>
+  </section>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    async function loadEvents(status = 'all') {
+      const container = document.getElementById('events-container');
+      if (!container) return;
+      
+      Utils.showLoading(container);
+      
+      try {
+        const st = status === 'all' ? '' : status;
+        const events = await API.getEvents(st);
+        
+        if (events.length === 0) {
+          Utils.showEmpty(container, 'Aucun événement dans cette catégorie');
+          return;
+        }
+        
+        renderEvents(events);
+      } catch (error) {
+        console.error('Error loading events:', error);
+        container.innerHTML = '<p style="text-align:center;color:var(--gris-texte);padding:40px;">Erreur de chargement. Veuillez réessayer.</p>';
+      }
+    }
+    
+    function renderEvents(events) {
+      const container = document.getElementById('events-container');
+      
+      container.innerHTML = events.map(event => {
+        const dateObj = new Date(event.date);
+        const day = dateObj.getDate();
+        const month = dateObj.toLocaleDateString('fr-FR', { month: 'short' });
+        const year = dateObj.getFullYear();
+        const isUpcoming = event.status === 'À venir';
+        
+        return `
+          <div class="event-card" data-animate="fadeUp">
+            <div class="event-image">
+              <img src="${event.image_url || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800'}" alt="${event.title}" loading="lazy">
+            </div>
+            <div class="event-body">
+              <div class="event-date-badge">
+                <i data-lucide="calendar" style="width:14px;height:14px;"></i>
+                ${day} ${month} ${year}
+              </div>
+              <h3>${event.title}</h3>
+              <p>${event.description}</p>
+              <div class="event-meta">
+                <span><i data-lucide="clock" style="width:14px;height:14px;"></i> ${event.time || 'Heure non définie'}</span>
+                <span><i data-lucide="map-pin" style="width:14px;height:14px;"></i> ${event.location || 'Lieu non défini'}</span>
+              </div>
+              <span class="event-status ${isUpcoming ? 'upcoming' : 'completed'}">${event.status}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      lucide.createIcons();
+    }
+    
+    function filterEvents(status) {
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.filter === status);
+      });
+      loadEvents(status);
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      loadEvents();
+    });
+  </script>
+</body>
+</html>

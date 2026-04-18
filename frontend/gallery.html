@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galerie Photo - NextGen Dev</title>
+  <meta name="description" content="Galerie photo de NextGen Dev : moments capturés à travers nos projets et événements.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+</head>
+<body>
+  <div id="nav-placeholder"></div>
+
+  <!-- Hero -->
+  <section class="hero" style="min-height: 50vh;">
+    <div class="hero-bg">
+      <img src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=1920&q=80" alt="Gallery background">
+    </div>
+    <div class="container">
+      <div class="hero-content">
+        <div>
+          <span class="hero-label">NOTRE GALERIE</span>
+          <h1 class="hero-title">Galerie <span class="gradient-text">Photo</span></h1>
+          <p class="hero-subtitle">Nos moments capturés à travers l'objectif</p>
+          <div class="filters" style="justify-content: flex-start; flex-wrap: wrap; gap: 10px; margin-top: 24px;">
+            <button class="filter-btn active" data-filter="all" onclick="filterGallery('all')">Tous</button>
+            <button class="filter-btn" data-filter="Équipe" onclick="filterGallery('Équipe')">Équipe</button>
+            <button class="filter-btn" data-filter="Événements" onclick="filterGallery('Événements')">Événements</button>
+            <button class="filter-btn" data-filter="Workshop" onclick="filterGallery('Workshop')">Workshops</button>
+            <button class="filter-btn" data-filter="Université" onclick="filterGallery('Université')">Université</button>
+          </div>
+        </div>
+        <div class="hero-lottie">
+          <div class="hero-lottie-container" data-lottie="animations/empty.json"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery Grid -->
+  <section class="section">
+    <div class="container">
+      <div class="gallery-grid" id="gallery-grid">
+        <!-- Loaded dynamically -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <img class="lightbox-img" id="lightbox-img" src="" alt="">
+    <div class="lightbox-close" onclick="closeLightbox()">
+      <i data-lucide="x" style="width:24px;height:24px;"></i>
+    </div>
+    <div class="lightbox-nav prev" onclick="navigateLightbox(-1)">
+      <i data-lucide="chevron-left" style="width:24px;height:24px;"></i>
+    </div>
+    <div class="lightbox-nav next" onclick="navigateLightbox(1)">
+      <i data-lucide="chevron-right" style="width:24px;height:24px;"></i>
+    </div>
+    <div class="lightbox-info" id="lightbox-info"></div>
+  </div>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    let allGalleryImages = [];
+    let currentLightboxIndex = 0;
+    
+    async function loadGallery(category = 'all') {
+      const grid = document.getElementById('gallery-grid');
+      if (!grid) return;
+      
+      Utils.showLoading(grid);
+      
+      try {
+        const cat = category === 'all' ? '' : category;
+        allGalleryImages = await API.getGallery(cat);
+        
+        if (allGalleryImages.length === 0) {
+          Utils.showEmpty(grid, 'Aucune photo dans cette catégorie');
+          return;
+        }
+        
+        renderGallery(allGalleryImages);
+      } catch (error) {
+        console.error('Error loading gallery:', error);
+        grid.innerHTML = '<p style="text-align:center;color:var(--gris-texte);padding:40px;">Erreur de chargement. Veuillez réessayer.</p>';
+      }
+    }
+    
+    function renderGallery(images) {
+      const grid = document.getElementById('gallery-grid');
+      
+      grid.innerHTML = images.map((img, i) => `
+        <div class="gallery-item ${i % 5 === 0 ? 'wide' : ''}" onclick="openLightbox(${i})" data-animate="fadeUp">
+          <img src="${img.image_url}" alt="${img.title}" loading="lazy">
+          <div class="gallery-item-overlay">
+            <i data-lucide="zoom-in" style="width:32px;height:32px;"></i>
+            <span>${img.title}</span>
+          </div>
+        </div>
+      `).join('');
+      
+      lucide.createIcons();
+    }
+    
+    function filterGallery(category) {
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.filter === category);
+      });
+      loadGallery(category);
+    }
+    
+    function openLightbox(index) {
+      currentLightboxIndex = index;
+      const lightbox = document.getElementById('lightbox');
+      const img = document.getElementById('lightbox-img');
+      const info = document.getElementById('lightbox-info');
+      
+      const item = allGalleryImages[index];
+      img.src = item.image_url;
+      info.innerHTML = `<h4>${item.title}</h4>${item.description ? `<p>${item.description}</p>` : ''}`;
+      
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    
+    function navigateLightbox(direction) {
+      currentLightboxIndex += direction;
+      if (currentLightboxIndex < 0) currentLightboxIndex = allGalleryImages.length - 1;
+      if (currentLightboxIndex >= allGalleryImages.length) currentLightboxIndex = 0;
+      openLightbox(currentLightboxIndex);
+    }
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') navigateLightbox(-1);
+      if (e.key === 'ArrowRight') navigateLightbox(1);
+    });
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      loadGallery();
+    });
+  </script>
+</body>
+</html>

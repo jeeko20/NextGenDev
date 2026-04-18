@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>À Propos - NextGen Dev</title>
+  <meta name="description" content="Qui sommes-nous ? NextGen Dev, groupe de 5 étudiants développeurs à l'Université Saint François d'Assise d'Haïti.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+</head>
+<body>
+  <div id="nav-placeholder"></div>
+
+  <!-- Hero -->
+  <section class="hero" style="min-height: 60vh;">
+    <div class="hero-bg">
+      <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1920&q=80" alt="University">
+    </div>
+    <div class="container">
+      <div class="hero-content">
+        <div>
+          <span class="hero-label">À PROPOS DE NOUS</span>
+          <h1 class="hero-title">Qui sommes-<span class="gradient-text">nous ?</span></h1>
+          <p class="hero-subtitle">NextGen Dev - Groupe de 5 étudiants passionnés par la technologie</p>
+        </div>
+        <div class="hero-lottie">
+          <div class="hero-lottie-container" data-lottie="animations/empty.json"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Story -->
+  <section class="section" data-animate="fadeUp">
+    <div class="container">
+      <div class="about-story">
+        <div>
+          <span class="section-label">NOTRE HISTOIRE</span>
+          <h2 class="section-title" style="text-align: left;">L'aventure NextGen Dev</h2>
+          <p style="color: var(--gris-texte); line-height: 1.8; margin-bottom: 16px;">NextGen Dev est né de la rencontre de cinq étudiants passionnés par la technologie à l'Université Saint François d'Assise d'Haïti. Notre groupe s'est formé autour d'une vision commune : utiliser le numérique comme levier de développement pour notre pays.</p>
+          <p style="color: var(--gris-texte); line-height: 1.8; margin-bottom: 16px;">Depuis notre création, nous avons réalisé plus de 15 projets allant du simple site vitrine aux applications complexes, en passant par la couverture photographique d'événements majeurs. Chaque projet est pour nous une opportunité d'apprendre et de progresser.</p>
+          <p style="color: var(--gris-texte); line-height: 1.8;">Notre force réside dans la complémentarité de nos compétences. Du développement web au mobile, du design à la photographie, nous couvrons l'ensemble des besoins digitaux de nos clients.</p>
+        </div>
+        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80" alt="Team working" style="border-radius: var(--radius-lg);">
+      </div>
+    </div>
+  </section>
+
+  <!-- Team Detail -->
+  <section class="section" style="background: var(--gris-fonce);" data-animate="fadeUp">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">L'ÉQUIPE</span>
+        <h2 class="section-title">Nos membres</h2>
+        <p class="section-subtitle">5 talents, une passion commune pour la tech</p>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 40px;" data-stagger>
+        <!-- Member 1 -->
+        <div style="display: grid; grid-template-columns: 200px 1fr; gap: 40px; align-items: center; background: var(--noir-profond); border-radius: var(--radius-lg); padding: 40px;">
+          <div class="team-avatar" style="width: 160px; height: 160px; margin: 0;">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&q=80" alt="Duval David">
+          </div>
+          <div>
+            <h3 style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 600; margin-bottom: 4px;">Duval David</h3>
+            <p style="color: var(--bleu-acier); font-family: var(--font-mono); font-size: 0.875rem; margin-bottom: 16px;">Développeur Full Stack</p>
+            <p style="color: var(--gris-texte); line-height: 1.7; margin-bottom: 16px;">Passionné par le web et les nouvelles technologies, David maîtrise React, Node.js et Python. Il est le cerveau technique derrière nos projets les plus ambitieux et assure la qualité de chaque ligne de code.</p>
+            <div class="portfolio-tags">
+              <span class="portfolio-tag">React</span>
+              <span class="portfolio-tag">Node.js</span>
+              <span class="portfolio-tag">Python</span>
+              <span class="portfolio-tag">PostgreSQL</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Member 2 -->
+        <div style="display: grid; grid-template-columns: 200px 1fr; gap: 40px; align-items: center; background: var(--noir-profond); border-radius: var(--radius-lg); padding: 40px;">
+          <div class="team-avatar" style="width: 160px; height: 160px; margin: 0;">
+            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&q=80" alt="Durosier Witly">
+          </div>
+          <div>
+            <h3 style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 600; margin-bottom: 4px;">Durosier Witly</h3>
+            <p style="color: var(--bleu-acier); font-family: var(--font-mono); font-size: 0.875rem; margin-bottom: 16px;">Développeur Mobile</p>
+            <p style="color: var(--gris-texte); line-height: 1.7; margin-bottom: 16px;">Expert en Flutter et React Native, Witly crée des applications mobiles fluides et intuitives. Son sens du détail et sa rigueur font de lui un développeur mobile de référence au sein de l'équipe.</p>
+            <div class="portfolio-tags">
+              <span class="portfolio-tag">Flutter</span>
+              <span class="portfolio-tag">React Native</span>
+              <span class="portfolio-tag">Dart</span>
+              <span class="portfolio-tag">Firebase</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Member 3 -->
+        <div style="display: grid; grid-template-columns: 200px 1fr; gap: 40px; align-items: center; background: var(--noir-profond); border-radius: var(--radius-lg); padding: 40px;">
+          <div class="team-avatar" style="width: 160px; height: 160px; margin: 0;">
+            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&q=80" alt="Juste Richcard">
+          </div>
+          <div>
+            <h3 style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 600; margin-bottom: 4px;">Juste Richcard</h3>
+            <p style="color: var(--bleu-acier); font-family: var(--font-mono); font-size: 0.875rem; margin-bottom: 16px;">Designer UI/UX</p>
+            <p style="color: var(--gris-texte); line-height: 1.7; margin-bottom: 16px;">Créatif et minutieux, Richcard conçoit des interfaces élégantes et centrées sur l'utilisateur. Son œil aiguisé pour le design transforme chaque projet en une expérience visuelle unique.</p>
+            <div class="portfolio-tags">
+              <span class="portfolio-tag">Figma</span>
+              <span class="portfolio-tag">Adobe XD</span>
+              <span class="portfolio-tag">UI/UX</span>
+              <span class="portfolio-tag">Prototypage</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Member 4 -->
+        <div style="display: grid; grid-template-columns: 200px 1fr; gap: 40px; align-items: center; background: var(--noir-profond); border-radius: var(--radius-lg); padding: 40px;">
+          <div class="team-avatar" style="width: 160px; height: 160px; margin: 0;">
+            <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=300&q=80" alt="Ferdelus Christian">
+          </div>
+          <div>
+            <h3 style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 600; margin-bottom: 4px;">Ferdelus Christian</h3>
+            <p style="color: var(--bleu-acier); font-family: var(--font-mono); font-size: 0.875rem; margin-bottom: 16px;">Développeur Backend</p>
+            <p style="color: var(--gris-texte); line-height: 1.7; margin-bottom: 16px;">Spécialiste des bases de données et des APIs, Christian assure la robustesse et la scalabilité de nos systèmes. Son expertise en architecture logicielle est un atout majeur pour chaque projet.</p>
+            <div class="portfolio-tags">
+              <span class="portfolio-tag">Python</span>
+              <span class="portfolio-tag">Node.js</span>
+              <span class="portfolio-tag">PostgreSQL</span>
+              <span class="portfolio-tag">API REST</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Member 5 -->
+        <div style="display: grid; grid-template-columns: 200px 1fr; gap: 40px; align-items: center; background: var(--noir-profond); border-radius: var(--radius-lg); padding: 40px;">
+          <div class="team-avatar" style="width: 160px; height: 160px; margin: 0;">
+            <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&q=80" alt="Joker">
+          </div>
+          <div>
+            <h3 style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 600; margin-bottom: 4px;">Joker</h3>
+            <p style="color: var(--bleu-acier); font-family: var(--font-mono); font-size: 0.875rem; margin-bottom: 16px;">Photographe & Graphiste</p>
+            <p style="color: var(--gris-texte); line-height: 1.7; margin-bottom: 16px;">Artiste visuel polyvalent, Joker capture l'essence de chaque moment et crée des designs percutants. Son sens de la composition et de la lumière donne vie à nos projets créatifs.</p>
+            <div class="portfolio-tags">
+              <span class="portfolio-tag">Photographie</span>
+              <span class="portfolio-tag">Lightroom</span>
+              <span class="portfolio-tag">Illustrator</span>
+              <span class="portfolio-tag">Photoshop</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- University -->
+  <section class="section" data-animate="fadeUp">
+    <div class="container">
+      <div class="university-card">
+        <i data-lucide="graduation-cap" style="width:48px;height:48px;color:var(--bleu-acier);margin:0 auto 16px;"></i>
+        <h3>Université Saint François d'Assise</h3>
+        <p class="address">Delmas 33, Port-au-Prince, Haïti</p>
+        <p style="max-width: 600px; margin: 0 auto; line-height: 1.7;">Nos études à l'USFAS nous ont permis d'acquérir des bases solides en informatique et en développement logiciel. L'université nous offre un environnement propice à l'innovation et à la créativité, où nous pouvons mettre en pratique nos connaissances à travers des projets concrets.</p>
+      </div>
+    </div>
+  </section>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion Admin - NextGen Dev</title>
+  <meta name="description" content="Connexion au tableau de bord d'administration NextGen Dev.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+</head>
+<body>
+  <div class="login-page">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="login-lottie">
+          <div style="width: 120px; height: 120px;" data-lottie="animations/login.json"></div>
+        </div>
+        <div class="logo">NEXTGEN <span>DEV</span></div>
+        <h2>Connexion Admin</h2>
+      </div>
+      
+      <form class="login-form" id="login-form">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required placeholder="admin@nextgendev.ht" value="admin@nextgendev.ht">
+        </div>
+        <div class="form-group">
+          <label for="password">Mot de passe</label>
+          <input type="password" id="password" name="password" required placeholder="Votre mot de passe" value="admin123">
+        </div>
+        <button type="submit" class="btn btn-primary" id="login-btn" style="width: 100%;">
+          <i data-lucide="log-in" style="width:18px;height:18px;"></i>
+          Se connecter
+        </button>
+      </form>
+      
+      <div style="text-align: center; margin-top: 24px; font-size: 0.875rem; color: var(--gris-texte);">
+        <a href="index.html" style="color: var(--bleu-acier); transition: color 0.2s;" onmouseover="this.style.color='var(--bleu-glow)'" onmouseout="this.style.color='var(--bleu-acier)'">← Retour au site</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/animations.js"></script>
+  <script>
+    // Init Lucide icons
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+    
+    // Init Lottie
+    if (typeof Animations !== 'undefined') {
+      Animations.initLottie();
+    }
+    
+    // Login form
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const loginBtn = document.getElementById('login-btn');
+      loginBtn.disabled = true;
+      loginBtn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2px;margin:0 auto;"></div>';
+      
+      try {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        
+        await Auth.login(email, password);
+        Utils.toast('Connexion réussie !', 'success');
+        
+        setTimeout(() => {
+          window.location.href = 'dashboard/index.html';
+        }, 1000);
+      } catch (error) {
+        Utils.toast(error.message || 'Email ou mot de passe incorrect', 'error');
+        loginBtn.disabled = false;
+        loginBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-in"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/></svg> Se connecter';
+      }
+    });
+    
+    // Check if already logged in
+    if (Auth.isAuthenticated()) {
+      window.location.href = 'dashboard/index.html';
+    }
+  </script>
+</body>
+</html>

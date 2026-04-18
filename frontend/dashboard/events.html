@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Événements - Dashboard NextGen Dev</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="dashboard">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <a href="../index.html" class="sidebar-logo">NEXTGEN <span>DEV</span></a>
+      </div>
+      <nav class="sidebar-nav">
+        <ul>
+          <li><a href="index.html"><i data-lucide="layout-dashboard"></i> Vue d'ensemble</a></li>
+          <li><a href="portfolios.html"><i data-lucide="briefcase"></i> Portfolios</a></li>
+          <li><a href="gallery.html"><i data-lucide="image"></i> Galerie</a></li>
+          <li><a href="events.html" class="active"><i data-lucide="calendar"></i> Événements</a></li>
+          <li><a href="blog.html"><i data-lucide="file-text"></i> Blog</a></li>
+          <li><a href="messages.html"><i data-lucide="mail"></i> Messages</a></li>
+          <li><a href="settings.html"><i data-lucide="settings"></i> Paramètres</a></li>
+        </ul>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar">A</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="user-name">Admin</div>
+            <div class="sidebar-user-role">Administrateur</div>
+          </div>
+          <button onclick="Auth.logout()" style="color: var(--gris-texte); cursor: pointer;"><i data-lucide="log-out" style="width: 18px; height: 18px;"></i></button>
+        </div>
+      </div>
+    </aside>
+    
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+    
+    <main class="main-content">
+      <header class="topbar">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()"><i data-lucide="menu" style="width: 20px; height: 20px;"></i></button>
+          <h1 class="topbar-title">Événements</h1>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-primary btn-sm" onclick="openModal()"><i data-lucide="plus" style="width: 16px; height: 16px;"></i> Ajouter un événement</button>
+        </div>
+      </header>
+      
+      <div class="content">
+        <div class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Titre</th>
+                <th>Date</th>
+                <th>Lieu</th>
+                <th>Statut</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="events-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modal-title">Ajouter un événement</h3>
+        <button class="modal-close" onclick="closeModal()"><i data-lucide="x" style="width: 18px; height: 18px;"></i></button>
+      </div>
+      <div class="modal-body">
+        <form id="event-form">
+          <input type="hidden" id="event-id">
+          <div class="form-group">
+            <label for="event-title">Titre *</label>
+            <input type="text" id="event-title" required placeholder="Titre de l'événement">
+          </div>
+          <div class="form-group">
+            <label for="event-description">Description *</label>
+            <textarea id="event-description" rows="3" required placeholder="Description..."></textarea>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="form-group">
+              <label for="event-date">Date *</label>
+              <input type="date" id="event-date" required>
+            </div>
+            <div class="form-group">
+              <label for="event-time">Heure</label>
+              <input type="time" id="event-time">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="event-location">Lieu</label>
+            <input type="text" id="event-location" placeholder="Lieu de l'événement">
+          </div>
+          <div class="form-group">
+            <label for="event-status">Statut</label>
+            <select id="event-status">
+              <option value="À venir">À venir</option>
+              <option value="En cours">En cours</option>
+              <option value="Terminé">Terminé</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Image</label>
+            <div class="upload-zone" onclick="document.getElementById('file-input').click()">
+              <i data-lucide="upload-cloud"></i>
+              <p>Cliquez pour sélectionner une image</p>
+              <input type="file" id="file-input" accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
+            </div>
+            <div class="upload-preview" id="upload-preview" style="display: none;">
+              <img id="preview-img" src="" alt="Preview">
+              <button type="button" class="upload-preview-remove" onclick="removePreview()"><i data-lucide="x" style="width: 14px; height: 14px;"></i></button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+        <button class="btn btn-primary" onclick="saveEvent()">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Modal -->
+  <div class="modal-overlay" id="delete-modal">
+    <div class="modal" style="max-width: 400px;">
+      <div class="modal-header">
+        <h3>Confirmer la suppression</h3>
+        <button class="modal-close" onclick="closeDeleteModal()"><i data-lucide="x" style="width: 18px; height: 18px;"></i></button>
+      </div>
+      <div class="modal-body"><p style="color: var(--gris-texte);">Êtes-vous sûr de vouloir supprimer cet événement ?</p></div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeDeleteModal()">Annuler</button>
+        <button class="btn btn-danger" onclick="confirmDelete()">Supprimer</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script>
+    if (!Auth.isAuthenticated()) window.location.href = '../login.html';
+    lucide.createIcons();
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('active');
+      document.getElementById('sidebar-overlay').classList.toggle('active');
+    }
+    
+    let events = [];
+    let deleteId = null;
+    let uploadedImageUrl = '';
+    
+    async function loadEvents() {
+      try {
+        events = await API.getEvents();
+        renderEvents();
+      } catch (error) { Utils.toast('Erreur de chargement', 'error'); }
+    }
+    
+    function renderEvents() {
+      const tbody = document.getElementById('events-table-body');
+      if (events.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--gris-texte);padding:40px;">Aucun événement</td></tr>';
+        return;
+      }
+      tbody.innerHTML = events.map(e => `
+        <tr>
+          <td><strong>${e.title}</strong></td>
+          <td>${Utils.formatDate(e.date)} ${e.time ? 'à ' + e.time : ''}</td>
+          <td>${e.location || '-'}</td>
+          <td><span class="badge ${e.status === 'À venir' ? 'badge-published' : e.status === 'Terminé' ? 'badge-read' : 'badge-draft'}">${e.status}</span></td>
+          <td>
+            <div class="cell-actions">
+              <button class="btn-edit" onclick="editEvent(${e.id})"><i data-lucide="pencil" style="width:14px;height:14px;"></i></button>
+              <button class="btn-delete" onclick="deleteEvent(${e.id})"><i data-lucide="trash-2" style="width:14px;height:14px;"></i></button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+      lucide.createIcons();
+    }
+    
+    function openModal(id = null) {
+      document.getElementById('modal').classList.add('active');
+      document.getElementById('modal-title').textContent = id ? 'Modifier l\'événement' : 'Ajouter un événement';
+      if (id) {
+        const ev = events.find(x => x.id === id);
+        if (ev) {
+          document.getElementById('event-id').value = ev.id;
+          document.getElementById('event-title').value = ev.title;
+          document.getElementById('event-description').value = ev.description;
+          document.getElementById('event-date').value = ev.date;
+          document.getElementById('event-time').value = ev.time || '';
+          document.getElementById('event-location').value = ev.location || '';
+          document.getElementById('event-status').value = ev.status;
+          uploadedImageUrl = ev.image_url || '';
+          if (uploadedImageUrl) { document.getElementById('preview-img').src = uploadedImageUrl; document.getElementById('upload-preview').style.display = 'block'; }
+        }
+      } else {
+        document.getElementById('event-form').reset();
+        document.getElementById('event-id').value = '';
+        uploadedImageUrl = '';
+        removePreview();
+      }
+    }
+    function closeModal() { document.getElementById('modal').classList.remove('active'); }
+    
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => { document.getElementById('preview-img').src = e.target.result; document.getElementById('upload-preview').style.display = 'block'; };
+      reader.readAsDataURL(file);
+      uploadFile(file);
+    }
+    async function uploadFile(file) {
+      try { const result = await API.uploadImage(file, 'nextgen-dev/events'); uploadedImageUrl = result.url; Utils.toast('Image uploadée !', 'success'); }
+      catch (error) { Utils.toast('Erreur upload', 'error'); }
+    }
+    function removePreview() { document.getElementById('upload-preview').style.display = 'none'; document.getElementById('preview-img').src = ''; uploadedImageUrl = ''; document.getElementById('file-input').value = ''; }
+    
+    async function saveEvent() {
+      const data = {
+        title: document.getElementById('event-title').value,
+        description: document.getElementById('event-description').value,
+        date: document.getElementById('event-date').value,
+        time: document.getElementById('event-time').value,
+        location: document.getElementById('event-location').value,
+        status: document.getElementById('event-status').value,
+        image_url: uploadedImageUrl
+      };
+      if (!data.title || !data.description || !data.date) { Utils.toast('Veuillez remplir les champs obligatoires', 'warning'); return; }
+      try {
+        const id = document.getElementById('event-id').value;
+        if (id) { await API.updateEvent(id, data); Utils.toast('Événement mis à jour !', 'success'); }
+        else { await API.createEvent(data); Utils.toast('Événement créé !', 'success'); }
+        closeModal(); loadEvents();
+      } catch (error) { Utils.toast('Erreur', 'error'); }
+    }
+    function editEvent(id) { openModal(id); }
+    function deleteEvent(id) { deleteId = id; document.getElementById('delete-modal').classList.add('active'); }
+    function closeDeleteModal() { document.getElementById('delete-modal').classList.remove('active'); deleteId = null; }
+    async function confirmDelete() {
+      if (!deleteId) return;
+      try { await API.deleteEvent(deleteId); Utils.toast('Événement supprimé !', 'success'); loadEvents(); }
+      catch (error) { Utils.toast('Erreur', 'error'); }
+      closeDeleteModal();
+    }
+    document.addEventListener('DOMContentLoaded', loadEvents);
+  </script>
+</body>
+</html>

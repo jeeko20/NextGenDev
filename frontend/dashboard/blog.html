@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog - Dashboard NextGen Dev</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="dashboard">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <a href="../index.html" class="sidebar-logo">NEXTGEN <span>DEV</span></a>
+      </div>
+      <nav class="sidebar-nav">
+        <ul>
+          <li><a href="index.html"><i data-lucide="layout-dashboard"></i> Vue d'ensemble</a></li>
+          <li><a href="portfolios.html"><i data-lucide="briefcase"></i> Portfolios</a></li>
+          <li><a href="gallery.html"><i data-lucide="image"></i> Galerie</a></li>
+          <li><a href="events.html"><i data-lucide="calendar"></i> Événements</a></li>
+          <li><a href="blog.html" class="active"><i data-lucide="file-text"></i> Blog</a></li>
+          <li><a href="messages.html"><i data-lucide="mail"></i> Messages</a></li>
+          <li><a href="settings.html"><i data-lucide="settings"></i> Paramètres</a></li>
+        </ul>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar">A</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="user-name">Admin</div>
+            <div class="sidebar-user-role">Administrateur</div>
+          </div>
+          <button onclick="Auth.logout()" style="color: var(--gris-texte); cursor: pointer;"><i data-lucide="log-out" style="width: 18px; height: 18px;"></i></button>
+        </div>
+      </div>
+    </aside>
+    
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+    
+    <main class="main-content">
+      <header class="topbar">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()"><i data-lucide="menu" style="width: 20px; height: 20px;"></i></button>
+          <h1 class="topbar-title">Blog</h1>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-primary btn-sm" onclick="openModal()"><i data-lucide="plus" style="width: 16px; height: 16px;"></i> Nouvel article</button>
+        </div>
+      </header>
+      
+      <div class="content">
+        <div class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Image</th>
+                <th>Titre</th>
+                <th>Catégorie</th>
+                <th>Date</th>
+                <th>Statut</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="blog-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal" style="max-width: 700px;">
+      <div class="modal-header">
+        <h3 id="modal-title">Nouvel article</h3>
+        <button class="modal-close" onclick="closeModal()"><i data-lucide="x" style="width: 18px; height: 18px;"></i></button>
+      </div>
+      <div class="modal-body">
+        <form id="blog-form">
+          <input type="hidden" id="blog-id">
+          <div class="form-group">
+            <label for="blog-title">Titre *</label>
+            <input type="text" id="blog-title" required placeholder="Titre de l'article">
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="form-group">
+              <label for="blog-category">Catégorie</label>
+              <select id="blog-category">
+                <option value="Technologie">Technologie</option>
+                <option value="Mobile">Mobile</option>
+                <option value="Web">Web</option>
+                <option value="Design">Design</option>
+                <option value="Photographie">Photographie</option>
+                <option value="Tutoriel">Tutoriel</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="blog-status">Statut</label>
+              <select id="blog-status">
+                <option value="draft">Brouillon</option>
+                <option value="published">Publié</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="blog-excerpt">Extrait</label>
+            <textarea id="blog-excerpt" rows="2" placeholder="Résumé de l'article..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="blog-content">Contenu</label>
+            <textarea id="blog-content" rows="8" placeholder="Contenu de l'article (HTML accepté)..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>Image mise en avant</label>
+            <div class="upload-zone" onclick="document.getElementById('file-input').click()">
+              <i data-lucide="upload-cloud"></i>
+              <p>Cliquez pour sélectionner une image</p>
+              <input type="file" id="file-input" accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
+            </div>
+            <div class="upload-preview" id="upload-preview" style="display: none;">
+              <img id="preview-img" src="" alt="Preview">
+              <button type="button" class="upload-preview-remove" onclick="removePreview()"><i data-lucide="x" style="width: 14px; height: 14px;"></i></button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+        <button class="btn btn-primary" onclick="saveBlog()">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Modal -->
+  <div class="modal-overlay" id="delete-modal">
+    <div class="modal" style="max-width: 400px;">
+      <div class="modal-header">
+        <h3>Confirmer la suppression</h3>
+        <button class="modal-close" onclick="closeDeleteModal()"><i data-lucide="x" style="width: 18px; height: 18px;"></i></button>
+      </div>
+      <div class="modal-body"><p style="color: var(--gris-texte);">Êtes-vous sûr de vouloir supprimer cet article ?</p></div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeDeleteModal()">Annuler</button>
+        <button class="btn btn-danger" onclick="confirmDelete()">Supprimer</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script>
+    if (!Auth.isAuthenticated()) window.location.href = '../login.html';
+    lucide.createIcons();
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('active');
+      document.getElementById('sidebar-overlay').classList.toggle('active');
+    }
+    
+    let posts = [];
+    let deleteId = null;
+    let uploadedImageUrl = '';
+    
+    async function loadBlog() {
+      try {
+        posts = await API.getBlogPosts();
+        renderBlog();
+      } catch (error) { Utils.toast('Erreur de chargement', 'error'); }
+    }
+    
+    function renderBlog() {
+      const tbody = document.getElementById('blog-table-body');
+      if (posts.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--gris-texte);padding:40px;">Aucun article</td></tr>';
+        return;
+      }
+      tbody.innerHTML = posts.map(p => `
+        <tr>
+          <td><img src="${p.featured_image || 'https://via.placeholder.com/60x40'}" alt="${p.title}" class="cell-image"></td>
+          <td><strong>${p.title}</strong></td>
+          <td>${p.category || '-'}</td>
+          <td>${Utils.formatDateShort(p.created_at)}</td>
+          <td><span class="badge ${p.status === 'published' ? 'badge-published' : 'badge-draft'}">${p.status === 'published' ? 'Publié' : 'Brouillon'}</span></td>
+          <td>
+            <div class="cell-actions">
+              <button class="btn-edit" onclick="editBlog(${p.id})"><i data-lucide="pencil" style="width:14px;height:14px;"></i></button>
+              <button class="btn-delete" onclick="deleteBlog(${p.id})"><i data-lucide="trash-2" style="width:14px;height:14px;"></i></button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+      lucide.createIcons();
+    }
+    
+    function openModal(id = null) {
+      document.getElementById('modal').classList.add('active');
+      document.getElementById('modal-title').textContent = id ? 'Modifier l\'article' : 'Nouvel article';
+      if (id) {
+        const p = posts.find(x => x.id === id);
+        if (p) {
+          document.getElementById('blog-id').value = p.id;
+          document.getElementById('blog-title').value = p.title;
+          document.getElementById('blog-category').value = p.category || 'Technologie';
+          document.getElementById('blog-status').value = p.status || 'draft';
+          document.getElementById('blog-excerpt').value = p.excerpt || '';
+          document.getElementById('blog-content').value = p.content || '';
+          uploadedImageUrl = p.featured_image || '';
+          if (uploadedImageUrl) { document.getElementById('preview-img').src = uploadedImageUrl; document.getElementById('upload-preview').style.display = 'block'; }
+        }
+      } else {
+        document.getElementById('blog-form').reset();
+        document.getElementById('blog-id').value = '';
+        uploadedImageUrl = '';
+        removePreview();
+      }
+    }
+    function closeModal() { document.getElementById('modal').classList.remove('active'); }
+    
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => { document.getElementById('preview-img').src = e.target.result; document.getElementById('upload-preview').style.display = 'block'; };
+      reader.readAsDataURL(file);
+      uploadFile(file);
+    }
+    async function uploadFile(file) {
+      try { const result = await API.uploadImage(file, 'nextgen-dev/blog'); uploadedImageUrl = result.url; Utils.toast('Image uploadée !', 'success'); }
+      catch (error) { Utils.toast('Erreur upload', 'error'); }
+    }
+    function removePreview() { document.getElementById('upload-preview').style.display = 'none'; document.getElementById('preview-img').src = ''; uploadedImageUrl = ''; document.getElementById('file-input').value = ''; }
+    
+    async function saveBlog() {
+      const data = {
+        title: document.getElementById('blog-title').value,
+        category: document.getElementById('blog-category').value,
+        status: document.getElementById('blog-status').value,
+        excerpt: document.getElementById('blog-excerpt').value,
+        content: document.getElementById('blog-content').value,
+        featured_image: uploadedImageUrl
+      };
+      if (!data.title) { Utils.toast('Le titre est obligatoire', 'warning'); return; }
+      try {
+        const id = document.getElementById('blog-id').value;
+        if (id) { await API.updateBlogPost(id, data); Utils.toast('Article mis à jour !', 'success'); }
+        else { await API.createBlogPost(data); Utils.toast('Article créé !', 'success'); }
+        closeModal(); loadBlog();
+      } catch (error) { Utils.toast('Erreur', 'error'); }
+    }
+    function editBlog(id) { openModal(id); }
+    function deleteBlog(id) { deleteId = id; document.getElementById('delete-modal').classList.add('active'); }
+    function closeDeleteModal() { document.getElementById('delete-modal').classList.remove('active'); deleteId = null; }
+    async function confirmDelete() {
+      if (!deleteId) return;
+      try { await API.deleteBlogPost(deleteId); Utils.toast('Article supprimé !', 'success'); loadBlog(); }
+      catch (error) { Utils.toast('Erreur', 'error'); }
+      closeDeleteModal();
+    }
+    document.addEventListener('DOMContentLoaded', loadBlog);
+  </script>
+</body>
+</html>

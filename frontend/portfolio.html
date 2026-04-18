@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio - NextGen Dev</title>
+  <meta name="description" content="Découvrez nos réalisations : sites web, applications mobiles, design graphique et photographie.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+</head>
+<body>
+  <div id="nav-placeholder"></div>
+
+  <!-- Hero -->
+  <section class="hero" style="min-height: 50vh;">
+    <div class="hero-bg">
+      <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1920&q=80" alt="Portfolio background">
+    </div>
+    <div class="container">
+      <div class="hero-content">
+        <div>
+          <span class="hero-label">NOS RÉALISATIONS</span>
+          <h1 class="hero-title">Notre <span class="gradient-text">Portfolio</span></h1>
+          <p class="hero-subtitle">Découvrez nos projets les plus récents</p>
+          <div class="filters" style="justify-content: flex-start; flex-wrap: wrap; gap: 10px; margin-top: 24px;">
+            <button class="filter-btn active" data-filter="all" onclick="filterPortfolio('all')">Tous</button>
+            <button class="filter-btn" data-filter="Sites Web" onclick="filterPortfolio('Sites Web')">Sites Web</button>
+            <button class="filter-btn" data-filter="Apps Mobiles" onclick="filterPortfolio('Apps Mobiles')">Apps Mobiles</button>
+            <button class="filter-btn" data-filter="Apps Desktop" onclick="filterPortfolio('Apps Desktop')">Apps Desktop</button>
+            <button class="filter-btn" data-filter="Design Graphique" onclick="filterPortfolio('Design Graphique')">Design</button>
+            <button class="filter-btn" data-filter="Photographie" onclick="filterPortfolio('Photographie')">Photo</button>
+          </div>
+        </div>
+        <div class="hero-lottie">
+          <div class="hero-lottie-container" data-lottie="animations/portfolio.json"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Portfolio Grid -->
+  <section class="section" style="background: var(--gris-fonce);">
+    <div class="container">
+      <div class="portfolio-grid" id="portfolio-grid">
+        <!-- Loaded dynamically -->
+      </div>
+    </div>
+  </section>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    let allPortfolios = [];
+    
+    async function loadPortfolios(category = 'all') {
+      const grid = document.getElementById('portfolio-grid');
+      if (!grid) return;
+      
+      Utils.showLoading(grid);
+      
+      try {
+        const cat = category === 'all' ? '' : category;
+        allPortfolios = await API.getPortfolios(cat);
+        
+        if (allPortfolios.length === 0) {
+          Utils.showEmpty(grid, 'Aucun projet dans cette catégorie');
+          return;
+        }
+        
+        renderPortfolios(allPortfolios);
+      } catch (error) {
+        console.error('Error loading portfolios:', error);
+        grid.innerHTML = '<p style="text-align:center;color:var(--gris-texte);padding:40px;">Erreur de chargement. Veuillez réessayer.</p>';
+      }
+    }
+    
+    function renderPortfolios(portfolios) {
+      const grid = document.getElementById('portfolio-grid');
+      
+      grid.innerHTML = portfolios.map(item => `
+        <div class="portfolio-card" data-animate="fadeUp">
+          <div class="portfolio-image">
+            <img src="${item.image_url || 'images/placeholder.jpg'}" alt="${item.title}" loading="lazy">
+            <div class="portfolio-overlay">
+              <i data-lucide="external-link" style="width:48px;height:48px;"></i>
+            </div>
+          </div>
+          <div class="portfolio-body">
+            <h3>${item.title}</h3>
+            <p>${item.description}</p>
+            <div class="portfolio-tags">
+              ${(item.technologies || []).slice(0, 4).map(t => `<span class="portfolio-tag">${t}</span>`).join('')}
+            </div>
+            ${item.project_url && item.project_url !== '#' ? `<a href="${item.project_url}" target="_blank" class="blog-link" style="margin-top: 12px;">Voir le projet →</a>` : ''}
+          </div>
+        </div>
+      `).join('');
+      
+      lucide.createIcons();
+      
+      // Re-init scroll animations
+      if (window.Animations) {
+        Animations.initScrollAnimations();
+      }
+    }
+    
+    function filterPortfolio(category) {
+      // Update active button
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.filter === category);
+      });
+      
+      loadPortfolios(category);
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      loadPortfolios();
+    });
+  </script>
+</body>
+</html>

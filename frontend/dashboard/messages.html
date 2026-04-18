@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Messages - Dashboard NextGen Dev</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="dashboard">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <a href="../index.html" class="sidebar-logo">NEXTGEN <span>DEV</span></a>
+      </div>
+      <nav class="sidebar-nav">
+        <ul>
+          <li><a href="index.html"><i data-lucide="layout-dashboard"></i> Vue d'ensemble</a></li>
+          <li><a href="portfolios.html"><i data-lucide="briefcase"></i> Portfolios</a></li>
+          <li><a href="gallery.html"><i data-lucide="image"></i> Galerie</a></li>
+          <li><a href="events.html"><i data-lucide="calendar"></i> Événements</a></li>
+          <li><a href="blog.html"><i data-lucide="file-text"></i> Blog</a></li>
+          <li><a href="messages.html" class="active"><i data-lucide="mail"></i> Messages</a></li>
+          <li><a href="settings.html"><i data-lucide="settings"></i> Paramètres</a></li>
+        </ul>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar">A</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="user-name">Admin</div>
+            <div class="sidebar-user-role">Administrateur</div>
+          </div>
+          <button onclick="Auth.logout()" style="color: var(--gris-texte); cursor: pointer;"><i data-lucide="log-out" style="width: 18px; height: 18px;"></i></button>
+        </div>
+      </div>
+    </aside>
+    
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+    
+    <main class="main-content">
+      <header class="topbar">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()"><i data-lucide="menu" style="width: 20px; height: 20px;"></i></button>
+          <h1 class="topbar-title">Messages</h1>
+        </div>
+      </header>
+      
+      <div class="content">
+        <div class="messages-list" id="messages-list">
+          <!-- Loaded dynamically -->
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Message Detail Modal -->
+  <div class="modal-overlay" id="message-modal">
+    <div class="modal" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3>Détail du message</h3>
+        <button class="modal-close" onclick="closeMessageModal()"><i data-lucide="x" style="width: 18px; height: 18px;"></i></button>
+      </div>
+      <div class="modal-body" id="message-detail"></div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeMessageModal()">Fermer</button>
+        <button class="btn btn-danger" onclick="deleteCurrentMessage()">Supprimer</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script>
+    if (!Auth.isAuthenticated()) window.location.href = '../login.html';
+    lucide.createIcons();
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('active');
+      document.getElementById('sidebar-overlay').classList.toggle('active');
+    }
+    
+    let messages = [];
+    let currentMessageId = null;
+    
+    async function loadMessages() {
+      try {
+        messages = await API.getMessages();
+        renderMessages();
+      } catch (error) { Utils.toast('Erreur de chargement', 'error'); }
+    }
+    
+    function renderMessages() {
+      const container = document.getElementById('messages-list');
+      if (messages.length === 0) {
+        container.innerHTML = '<div class="empty-state"><i data-lucide="mail"></i><h3>Aucun message</h3><p>Les messages reçus apparaîtront ici</p></div>';
+        lucide.createIcons();
+        return;
+      }
+      container.innerHTML = messages.map(m => `
+        <div class="message-item ${m.status === 'unread' ? 'unread' : ''}" onclick="showMessage(${m.id})">
+          <div class="message-avatar">${m.name.charAt(0).toUpperCase()}</div>
+          <div class="message-content">
+            <div class="message-header">
+              <h4>${m.name}</h4>
+              <span>${Utils.formatDateShort(m.created_at)}</span>
+            </div>
+            <div class="message-subject">${m.subject || 'Sans sujet'}</div>
+            <div class="message-preview">${m.message}</div>
+          </div>
+          <span class="badge ${m.status === 'unread' ? 'badge-unread' : 'badge-read'}">${m.status === 'unread' ? 'Non lu' : 'Lu'}</span>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+    
+    async function showMessage(id) {
+      const msg = messages.find(m => m.id === id);
+      if (!msg) return;
+      currentMessageId = id;
+      
+      document.getElementById('message-detail').innerHTML = `
+        <div style="margin-bottom: 20px;">
+          <strong style="font-size: 1.125rem;">${msg.name}</strong>
+          <p style="color: var(--gris-texte); font-size: 0.875rem;">${msg.email}</p>
+        </div>
+        <div style="margin-bottom: 16px;">
+          <span style="color: var(--bleu-acier); font-weight: 600;">${msg.subject || 'Sans sujet'}</span>
+          <span style="color: var(--gris-texte); font-size: 0.75rem; margin-left: 12px;">${Utils.formatDate(msg.created_at)}</span>
+        </div>
+        <div style="background: var(--noir-profond); padding: 20px; border-radius: var(--radius-md); line-height: 1.7;">${msg.message}</div>
+      `;
+      document.getElementById('message-modal').classList.add('active');
+      
+      if (msg.status === 'unread') {
+        try { await API.markMessageRead(id); msg.status = 'read'; renderMessages(); }
+        catch (e) { console.error(e); }
+      }
+    }
+    
+    function closeMessageModal() {
+      document.getElementById('message-modal').classList.remove('active');
+      currentMessageId = null;
+    }
+    
+    async function deleteCurrentMessage() {
+      if (!currentMessageId) return;
+      try {
+        await API.deleteMessage(currentMessageId);
+        Utils.toast('Message supprimé !', 'success');
+        closeMessageModal();
+        loadMessages();
+      } catch (error) { Utils.toast('Erreur', 'error'); }
+    }
+    
+    document.addEventListener('DOMContentLoaded', loadMessages);
+  </script>
+</body>
+</html>

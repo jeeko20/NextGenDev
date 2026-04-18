@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - NextGen Dev</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <a href="../index.html" class="sidebar-logo">NEXTGEN <span>DEV</span></a>
+      </div>
+      <nav class="sidebar-nav">
+        <ul>
+          <li><a href="index.html" class="active"><i data-lucide="layout-dashboard"></i> Vue d'ensemble</a></li>
+          <li><a href="portfolios.html"><i data-lucide="briefcase"></i> Portfolios</a></li>
+          <li><a href="gallery.html"><i data-lucide="image"></i> Galerie</a></li>
+          <li><a href="events.html"><i data-lucide="calendar"></i> Événements</a></li>
+          <li><a href="blog.html"><i data-lucide="file-text"></i> Blog</a></li>
+          <li><a href="messages.html"><i data-lucide="mail"></i> Messages</a></li>
+          <li><a href="settings.html"><i data-lucide="settings"></i> Paramètres</a></li>
+        </ul>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar">A</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="user-name">Admin</div>
+            <div class="sidebar-user-role">Administrateur</div>
+          </div>
+          <button onclick="Auth.logout()" style="color: var(--gris-texte); cursor: pointer;">
+            <i data-lucide="log-out" style="width: 18px; height: 18px;"></i>
+          </button>
+        </div>
+      </div>
+    </aside>
+    
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Topbar -->
+      <header class="topbar">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()">
+            <i data-lucide="menu" style="width: 20px; height: 20px;"></i>
+          </button>
+          <h1 class="topbar-title">Vue d'ensemble</h1>
+        </div>
+        <div class="topbar-actions">
+          <a href="messages.html" class="topbar-btn" style="display: flex;">
+            <i data-lucide="bell" style="width: 20px; height: 20px;"></i>
+            <span class="badge" id="notif-badge" style="display: none;">0</span>
+          </a>
+        </div>
+      </header>
+      
+      <!-- Content -->
+      <div class="content">
+        <!-- Stats Grid -->
+        <div class="stats-grid" id="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <div class="stat-card-icon"><i data-lucide="briefcase"></i></div>
+              <span class="stat-card-trend up">+12%</span>
+            </div>
+            <div class="stat-card-value" id="stat-portfolios">0</div>
+            <div class="stat-card-label">Projets</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <div class="stat-card-icon"><i data-lucide="image"></i></div>
+              <span class="stat-card-trend up">+8%</span>
+            </div>
+            <div class="stat-card-value" id="stat-gallery">0</div>
+            <div class="stat-card-label">Photos</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <div class="stat-card-icon"><i data-lucide="calendar"></i></div>
+              <span class="stat-card-trend up">+5%</span>
+            </div>
+            <div class="stat-card-value" id="stat-events">0</div>
+            <div class="stat-card-label">Événements</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <div class="stat-card-icon"><i data-lucide="file-text"></i></div>
+              <span class="stat-card-trend up">+15%</span>
+            </div>
+            <div class="stat-card-value" id="stat-blog">0</div>
+            <div class="stat-card-label">Articles</div>
+          </div>
+        </div>
+        
+        <!-- Chart + Recent -->
+        <div class="two-columns">
+          <div class="chart-container">
+            <h3>Activité récente</h3>
+            <canvas id="activity-chart" height="200"></canvas>
+          </div>
+          
+          <div class="recent-table">
+            <h3>Derniers messages</h3>
+            <div id="recent-messages">
+              <!-- Loaded dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script>
+    // Check auth
+    if (!Auth.isAuthenticated()) {
+      window.location.href = '../login.html';
+    }
+    
+    // Init Lucide
+    lucide.createIcons();
+    
+    // Sidebar toggle
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('active');
+      document.getElementById('sidebar-overlay').classList.toggle('active');
+    }
+    
+    // Load user info
+    async function loadUserInfo() {
+      try {
+        const user = Auth.getUser();
+        if (user) {
+          document.getElementById('user-name').textContent = user.name || user.email;
+          document.querySelector('.sidebar-user-avatar').textContent = (user.name || user.email).charAt(0).toUpperCase();
+        }
+      } catch (error) {
+        console.error('Error loading user:', error);
+      }
+    }
+    
+    // Load stats
+    async function loadStats() {
+      try {
+        const stats = await API.getStats();
+        document.getElementById('stat-portfolios').textContent = stats.portfolio_count || 0;
+        document.getElementById('stat-gallery').textContent = stats.gallery_count || 0;
+        document.getElementById('stat-events').textContent = stats.event_count || 0;
+        document.getElementById('stat-blog').textContent = stats.blog_count || 0;
+        
+        // Update notification badge
+        if (stats.unread_messages > 0) {
+          const badge = document.getElementById('notif-badge');
+          badge.textContent = stats.unread_messages;
+          badge.style.display = 'flex';
+        }
+      } catch (error) {
+        console.error('Error loading stats:', error);
+      }
+    }
+    
+    // Load recent messages
+    async function loadRecentMessages() {
+      try {
+        const messages = await API.getMessages();
+        const recent = messages.slice(0, 5);
+        const container = document.getElementById('recent-messages');
+        
+        if (recent.length === 0) {
+          container.innerHTML = '<div style="padding: 24px; text-align: center; color: var(--gris-texte);">Aucun message</div>';
+          return;
+        }
+        
+        container.innerHTML = recent.map(msg => `
+          <div class="message-item ${msg.status === 'unread' ? 'unread' : ''}" style="padding: 14px 24px; border-bottom: 1px solid var(--gris-moyen); border-radius: 0;">
+            <div class="message-avatar" style="width: 36px; height: 36px; font-size: 0.75rem;">${msg.name.charAt(0)}</div>
+            <div class="message-content">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h4 style="font-size: 0.8125rem;">${msg.name}</h4>
+                <span style="font-size: 0.6875rem; color: var(--gris-texte);">${Utils.formatDateShort(msg.created_at)}</span>
+              </div>
+              <p class="message-subject" style="font-size: 0.75rem;">${msg.subject}</p>
+              <p class="message-preview">${msg.message}</p>
+            </div>
+          </div>
+        `).join('');
+      } catch (error) {
+        console.error('Error loading messages:', error);
+      }
+    }
+    
+    // Init chart
+    function initChart() {
+      const ctx = document.getElementById('activity-chart');
+      if (!ctx) return;
+      
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
+          datasets: [{
+            label: 'Projets',
+            data: [2, 4, 3, 6, 8, 10],
+            borderColor: '#3B82F6',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            fill: true,
+            tension: 0.4,
+            borderWidth: 2,
+            pointRadius: 4,
+            pointBackgroundColor: '#3B82F6'
+          }, {
+            label: 'Messages',
+            data: [5, 8, 6, 12, 15, 18],
+            borderColor: '#8B5CF6',
+            backgroundColor: 'rgba(139, 92, 246, 0.1)',
+            fill: true,
+            tension: 0.4,
+            borderWidth: 2,
+            pointRadius: 4,
+            pointBackgroundColor: '#8B5CF6'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                color: '#8A8A8A',
+                font: { family: 'Inter', size: 12 },
+                usePointStyle: true,
+                padding: 20
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: 'rgba(45, 45, 45, 0.5)' },
+              ticks: { color: '#8A8A8A', font: { family: 'Inter', size: 11 } }
+            },
+            y: {
+              grid: { color: 'rgba(45, 45, 45, 0.5)' },
+              ticks: { color: '#8A8A8A', font: { family: 'Inter', size: 11 } }
+            }
+          }
+        }
+      });
+    }
+    
+    // Init
+    document.addEventListener('DOMContentLoaded', () => {
+      loadUserInfo();
+      loadStats();
+      loadRecentMessages();
+      initChart();
+    });
+  </script>
+</body>
+</html>

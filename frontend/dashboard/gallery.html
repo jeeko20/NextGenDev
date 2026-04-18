@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galerie - Dashboard NextGen Dev</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="dashboard">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <a href="../index.html" class="sidebar-logo">NEXTGEN <span>DEV</span></a>
+      </div>
+      <nav class="sidebar-nav">
+        <ul>
+          <li><a href="index.html"><i data-lucide="layout-dashboard"></i> Vue d'ensemble</a></li>
+          <li><a href="portfolios.html"><i data-lucide="briefcase"></i> Portfolios</a></li>
+          <li><a href="gallery.html" class="active"><i data-lucide="image"></i> Galerie</a></li>
+          <li><a href="events.html"><i data-lucide="calendar"></i> Événements</a></li>
+          <li><a href="blog.html"><i data-lucide="file-text"></i> Blog</a></li>
+          <li><a href="messages.html"><i data-lucide="mail"></i> Messages</a></li>
+          <li><a href="settings.html"><i data-lucide="settings"></i> Paramètres</a></li>
+        </ul>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar">A</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="user-name">Admin</div>
+            <div class="sidebar-user-role">Administrateur</div>
+          </div>
+          <button onclick="Auth.logout()" style="color: var(--gris-texte); cursor: pointer;">
+            <i data-lucide="log-out" style="width: 18px; height: 18px;"></i>
+          </button>
+        </div>
+      </div>
+    </aside>
+    
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+    
+    <main class="main-content">
+      <header class="topbar">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()">
+            <i data-lucide="menu" style="width: 20px; height: 20px;"></i>
+          </button>
+          <h1 class="topbar-title">Galerie</h1>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-primary btn-sm" onclick="openModal()">
+            <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+            Ajouter des photos
+          </button>
+        </div>
+      </header>
+      
+      <div class="content">
+        <div class="dashboard-gallery" id="gallery-grid">
+          <!-- Loaded dynamically -->
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal Add -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Ajouter des photos</h3>
+        <button class="modal-close" onclick="closeModal()">
+          <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="gallery-form">
+          <div class="form-group">
+            <label for="photo-title">Titre</label>
+            <input type="text" id="photo-title" placeholder="Titre de la photo">
+          </div>
+          <div class="form-group">
+            <label for="photo-category">Catégorie</label>
+            <select id="photo-category">
+              <option value="Général">Général</option>
+              <option value="Équipe">Équipe</option>
+              <option value="Événements">Événements</option>
+              <option value="Workshop">Workshop</option>
+              <option value="Université">Université</option>
+              <option value="Compétition">Compétition</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="photo-description">Description</label>
+            <textarea id="photo-description" rows="2" placeholder="Description..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>Image</label>
+            <div class="upload-zone" onclick="document.getElementById('file-input').click()">
+              <i data-lucide="upload-cloud"></i>
+              <p>Cliquez pour sélectionner une image</p>
+              <input type="file" id="file-input" accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
+            </div>
+            <div class="upload-preview" id="upload-preview" style="display: none;">
+              <img id="preview-img" src="" alt="Preview">
+              <button type="button" class="upload-preview-remove" onclick="removePreview()">
+                <i data-lucide="x" style="width: 14px; height: 14px;"></i>
+              </button>
+            </div>
+            <div class="upload-progress" id="upload-progress" style="display: none;">
+              <div class="upload-progress-bar" id="progress-bar"></div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+        <button class="btn btn-primary" onclick="savePhoto()">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Modal -->
+  <div class="modal-overlay" id="delete-modal">
+    <div class="modal" style="max-width: 400px;">
+      <div class="modal-header">
+        <h3>Confirmer la suppression</h3>
+        <button class="modal-close" onclick="closeDeleteModal()"><i data-lucide="x" style="width: 18px; height: 18px;"></i></button>
+      </div>
+      <div class="modal-body">
+        <p style="color: var(--gris-texte);">Êtes-vous sûr de vouloir supprimer cette photo ?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeDeleteModal()">Annuler</button>
+        <button class="btn btn-danger" onclick="confirmDelete()">Supprimer</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script>
+    if (!Auth.isAuthenticated()) window.location.href = '../login.html';
+    lucide.createIcons();
+    
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('active');
+      document.getElementById('sidebar-overlay').classList.toggle('active');
+    }
+    
+    let images = [];
+    let deleteId = null;
+    let uploadedImageUrl = '';
+    
+    async function loadGallery() {
+      try {
+        images = await API.getGallery();
+        renderGallery();
+      } catch (error) {
+        Utils.toast('Erreur de chargement', 'error');
+      }
+    }
+    
+    function renderGallery() {
+      const grid = document.getElementById('gallery-grid');
+      if (images.length === 0) {
+        grid.innerHTML = '<div class="empty-state" style="grid-column: 1/-1;"><i data-lucide="image"></i><h3>Aucune photo</h3><p>Ajoutez votre première photo à la galerie</p></div>';
+        lucide.createIcons();
+        return;
+      }
+      
+      grid.innerHTML = images.map(img => `
+        <div class="dashboard-gallery-item">
+          <img src="${img.image_url}" alt="${img.title}" loading="lazy">
+          <div class="dashboard-gallery-item-overlay">
+            <button class="btn-edit" onclick="editPhoto(${img.id})"><i data-lucide="pencil" style="width:16px;height:16px;"></i></button>
+            <button class="btn-delete" onclick="deletePhoto(${img.id})"><i data-lucide="trash-2" style="width:16px;height:16px;"></i></button>
+          </div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+    
+    function openModal() {
+      document.getElementById('modal').classList.add('active');
+      document.getElementById('gallery-form').reset();
+      uploadedImageUrl = '';
+      removePreview();
+    }
+    
+    function closeModal() {
+      document.getElementById('modal').classList.remove('active');
+    }
+    
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        document.getElementById('preview-img').src = e.target.result;
+        document.getElementById('upload-preview').style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+      uploadFile(file);
+    }
+    
+    async function uploadFile(file) {
+      const progress = document.getElementById('upload-progress');
+      const bar = document.getElementById('progress-bar');
+      progress.style.display = 'block';
+      bar.style.width = '30%';
+      try {
+        const result = await API.uploadImage(file, 'nextgen-dev/gallery');
+        uploadedImageUrl = result.url;
+        bar.style.width = '100%';
+        setTimeout(() => progress.style.display = 'none', 500);
+        Utils.toast('Image uploadée !', 'success');
+      } catch (error) {
+        Utils.toast('Erreur upload', 'error');
+        progress.style.display = 'none';
+      }
+    }
+    
+    function removePreview() {
+      document.getElementById('upload-preview').style.display = 'none';
+      document.getElementById('preview-img').src = '';
+      uploadedImageUrl = '';
+      document.getElementById('file-input').value = '';
+    }
+    
+    async function savePhoto() {
+      const data = {
+        title: document.getElementById('photo-title').value || 'Sans titre',
+        category: document.getElementById('photo-category').value,
+        description: document.getElementById('photo-description').value,
+        image_url: uploadedImageUrl
+      };
+      if (!data.image_url) {
+        Utils.toast('Veuillez upload une image', 'warning');
+        return;
+      }
+      try {
+        await API.createGalleryImage(data);
+        Utils.toast('Photo ajoutée !', 'success');
+        closeModal();
+        loadGallery();
+      } catch (error) {
+        Utils.toast('Erreur', 'error');
+      }
+    }
+    
+    function editPhoto(id) {
+      const img = images.find(i => i.id === id);
+      if (img) {
+        document.getElementById('photo-title').value = img.title;
+        document.getElementById('photo-category').value = img.category;
+        document.getElementById('photo-description').value = img.description || '';
+        uploadedImageUrl = img.image_url;
+        document.getElementById('preview-img').src = img.image_url;
+        document.getElementById('upload-preview').style.display = 'block';
+        openModal();
+      }
+    }
+    
+    function deletePhoto(id) {
+      deleteId = id;
+      document.getElementById('delete-modal').classList.add('active');
+    }
+    
+    function closeDeleteModal() {
+      document.getElementById('delete-modal').classList.remove('active');
+      deleteId = null;
+    }
+    
+    async function confirmDelete() {
+      if (!deleteId) return;
+      try {
+        await API.deleteGalleryImage(deleteId);
+        Utils.toast('Photo supprimée !', 'success');
+        loadGallery();
+      } catch (error) {
+        Utils.toast('Erreur', 'error');
+      }
+      closeDeleteModal();
+    }
+    
+    document.addEventListener('DOMContentLoaded', loadGallery);
+  </script>
+</body>
+</html>

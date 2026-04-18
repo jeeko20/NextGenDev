@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NextGen Dev - Groupe de Développement Tech | Haïti</title>
+  <meta name="description" content="NextGen Dev - Collectif de 5 étudiants développeurs à l'Université Saint François d'Assise d'Haïti. Sites web, apps mobiles, design graphique et photographie.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+</head>
+<body>
+  <!-- Page Loader -->
+  <div class="page-loader">
+    <div class="page-loader-logo">NEXTGEN <span>DEV</span></div>
+  </div>
+
+  <!-- Navigation -->
+  <div id="nav-placeholder"></div>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-bg">
+      <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80" alt="Tech background">
+    </div>
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-text">
+          <div class="hero-label">GROUPE DE DÉVELOPPEMENT TECH — UNIVERSITÉ SAINT FRANÇOIS D'ASSISE</div>
+          <h1 class="hero-title">
+            <span class="gradient-text">NextGen</span> Dev<br>
+            <span class="gradient-text">Haïti</span>
+          </h1>
+          <p class="hero-subtitle">Collectif de 5 étudiants développeurs créant des solutions digitales innovantes : sites web, applications mobiles & desktop, design graphique et photographie.</p>
+          <div class="hero-cta">
+            <a href="services.html" class="btn btn-primary">
+              <i data-lucide="rocket" style="width:18px;height:18px;"></i>
+              Découvrir nos services
+            </a>
+            <a href="portfolio.html" class="btn btn-secondary">
+              <i data-lucide="briefcase" style="width:18px;height:18px;"></i>
+              Voir nos réalisations
+            </a>
+          </div>
+          <div class="stats-bar">
+            <div class="stat-item">
+              <span class="stat-number" data-counter="15">0</span>
+              <span class="stat-label">Projets réalisés</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number" data-counter="5">0</span>
+              <span class="stat-label">Développeurs</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number" data-counter="3">0</span>
+              <span class="stat-label">Ans d'expérience</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-lottie">
+          <div class="hero-lottie-container" data-lottie="animations/hero-dev.json" data-lottie-loop="true"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section class="section" data-animate="fadeUp">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Nos Services</span>
+        <h2 class="section-title">Ce que nous faisons</h2>
+        <p class="section-subtitle">Des solutions digitales complètes pour donner vie à vos projets</p>
+      </div>
+      <div class="services-grid" data-stagger>
+        <div class="service-card">
+          <div class="service-icon">
+            <i data-lucide="globe"></i>
+          </div>
+          <h3>Sites Internet</h3>
+          <p>Sites vitrines, e-commerce, applications web modernes et responsives</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <i data-lucide="smartphone"></i>
+          </div>
+          <h3>Applications Mobiles</h3>
+          <p>Apps iOS et Android natives et cross-platform</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <i data-lucide="monitor"></i>
+          </div>
+          <h3>Applications Desktop</h3>
+          <p>Logiciels desktop multiplateformes performants</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <i data-lucide="palette"></i>
+          </div>
+          <h3>Design Graphique</h3>
+          <p>Identité visuelle, UI/UX, supports de communication</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <i data-lucide="camera"></i>
+          </div>
+          <h3>Photographie</h3>
+          <p>Shooting professionnel, retouche, couverture événementielle</p>
+        </div>
+      </div>
+      <div style="text-align: center; margin-top: 40px;">
+        <a href="services.html" class="btn btn-secondary">Voir tous nos services →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Portfolio Section -->
+  <section class="section" style="background: var(--gris-fonce);" data-animate="fadeUp">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Nos Réalisations</span>
+        <h2 class="section-title">Portfolio récent</h2>
+        <p class="section-subtitle">Découvrez nos projets les plus récents</p>
+      </div>
+      <div class="portfolio-grid" id="portfolio-grid" data-stagger>
+        <!-- Loaded dynamically -->
+      </div>
+      <div style="text-align: center; margin-top: 40px;">
+        <a href="portfolio.html" class="btn btn-primary">Voir tout le portfolio →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery Section -->
+  <section class="section" data-animate="fadeUp">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Notre Galerie</span>
+        <h2 class="section-title">Moments capturés</h2>
+        <p class="section-subtitle">Des images qui racontent notre parcours</p>
+      </div>
+      <div class="gallery-grid" id="gallery-grid">
+        <!-- Loaded dynamically -->
+      </div>
+      <div style="text-align: center; margin-top: 40px;">
+        <a href="gallery.html" class="btn btn-secondary">Voir toute la galerie →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team Section -->
+  <section class="section" style="background: var(--gris-fonce);" data-animate="fadeUp">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Notre Équipe</span>
+        <h2 class="section-title">Les membres de NextGen Dev</h2>
+        <p class="section-subtitle">5 passionnés de technologie, un objectif commun</p>
+      </div>
+      <div class="team-grid" data-stagger>
+        <div class="team-card">
+          <div class="team-avatar">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&q=80" alt="Duval David">
+          </div>
+          <h3>Duval David</h3>
+          <p>Développeur Full Stack</p>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">
+            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&q=80" alt="Durosier Witly">
+          </div>
+          <h3>Durosier Witly</h3>
+          <p>Développeur Mobile</p>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">
+            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&q=80" alt="Juste Richcard">
+          </div>
+          <h3>Juste Richcard</h3>
+          <p>Designer UI/UX</p>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">
+            <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=300&q=80" alt="Ferdelus Christian">
+          </div>
+          <h3>Ferdelus Christian</h3>
+          <p>Développeur Backend</p>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">
+            <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&q=80" alt="Joker">
+          </div>
+          <h3>Joker</h3>
+          <p>Photographe & Graphiste</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact CTA -->
+  <section class="section" data-animate="fadeUp">
+    <div class="container">
+      <div class="contact-cta">
+        <h2>Prêt à donner vie à votre projet ?</h2>
+        <p>Contactez-nous et discutons de vos idées</p>
+        <a href="contact.html" class="btn btn-white btn-lg">Nous contacter</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <img class="lightbox-img" id="lightbox-img" src="" alt="">
+    <div class="lightbox-close" onclick="closeLightbox()">
+      <i data-lucide="x" style="width:24px;height:24px;"></i>
+    </div>
+    <div class="lightbox-nav prev" onclick="navigateLightbox(-1)">
+      <i data-lucide="chevron-left" style="width:24px;height:24px;"></i>
+    </div>
+    <div class="lightbox-nav next" onclick="navigateLightbox(1)">
+      <i data-lucide="chevron-right" style="width:24px;height:24px;"></i>
+    </div>
+    <div class="lightbox-info" id="lightbox-info"></div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    // Load portfolio preview
+    async function loadPortfolioPreview() {
+      const grid = document.getElementById('portfolio-grid');
+      if (!grid) return;
+      
+      try {
+        const portfolios = await API.getPortfolios();
+        const preview = portfolios.slice(0, 6);
+        
+        grid.innerHTML = preview.map(item => `
+          <div class="portfolio-card">
+            <div class="portfolio-image">
+              <img src="${item.image_url || 'images/placeholder.jpg'}" alt="${item.title}">
+              <div class="portfolio-overlay">
+                <i data-lucide="eye" style="width:48px;height:48px;"></i>
+              </div>
+            </div>
+            <div class="portfolio-body">
+              <h3>${item.title}</h3>
+              <p>${item.description}</p>
+              <div class="portfolio-tags">
+                ${(item.technologies || []).slice(0, 3).map(t => `<span class="portfolio-tag">${t}</span>`).join('')}
+              </div>
+            </div>
+          </div>
+        `).join('');
+        
+        lucide.createIcons();
+      } catch (error) {
+        console.error('Error loading portfolio:', error);
+        grid.innerHTML = '<p style="text-align:center;color:var(--gris-texte);">Erreur de chargement</p>';
+      }
+    }
+    
+    // Load gallery preview
+    let galleryImages = [];
+    let currentLightboxIndex = 0;
+    
+    async function loadGalleryPreview() {
+      const grid = document.getElementById('gallery-grid');
+      if (!grid) return;
+      
+      try {
+        const images = await API.getGallery();
+        galleryImages = images.slice(0, 8);
+        
+        grid.innerHTML = galleryImages.map((img, i) => `
+          <div class="gallery-item ${i === 0 ? 'wide' : ''}" onclick="openLightbox(${i})">
+            <img src="${img.image_url}" alt="${img.title}" loading="lazy">
+            <div class="gallery-item-overlay">
+              <i data-lucide="zoom-in" style="width:32px;height:32px;"></i>
+              <span>${img.title}</span>
+            </div>
+          </div>
+        `).join('');
+        
+        lucide.createIcons();
+      } catch (error) {
+        console.error('Error loading gallery:', error);
+      }
+    }
+    
+    // Lightbox functions
+    function openLightbox(index) {
+      currentLightboxIndex = index;
+      const lightbox = document.getElementById('lightbox');
+      const img = document.getElementById('lightbox-img');
+      const info = document.getElementById('lightbox-info');
+      
+      const item = galleryImages[index];
+      img.src = item.image_url;
+      info.innerHTML = `<h4>${item.title}</h4>${item.description ? `<p>${item.description}</p>` : ''}`;
+      
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      lucide.createIcons();
+    }
+    
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    
+    function navigateLightbox(direction) {
+      currentLightboxIndex += direction;
+      if (currentLightboxIndex < 0) currentLightboxIndex = galleryImages.length - 1;
+      if (currentLightboxIndex >= galleryImages.length) currentLightboxIndex = 0;
+      openLightbox(currentLightboxIndex);
+    }
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') navigateLightbox(-1);
+      if (e.key === 'ArrowRight') navigateLightbox(1);
+    });
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      loadPortfolioPreview();
+      loadGalleryPreview();
+    });
+  </script>
+</body>
+</html>

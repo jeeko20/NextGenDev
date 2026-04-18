@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nos Services - NextGen Dev</title>
+  <meta name="description" content="Découvrez nos services : développement web, applications mobiles, applications desktop, design graphique et photographie.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+</head>
+<body>
+  <div id="nav-placeholder"></div>
+
+  <!-- Hero -->
+  <section class="hero" style="min-height: 60vh;">
+    <div class="hero-bg">
+      <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1920&q=80" alt="Code background">
+    </div>
+    <div class="container">
+      <div class="hero-content">
+        <div>
+          <span class="hero-label">NOS SERVICES</span>
+          <h1 class="hero-title">Nos <span class="gradient-text">Services</span></h1>
+          <p class="hero-subtitle">Des solutions digitales complètes pour votre succès</p>
+        </div>
+        <div class="hero-lottie">
+          <div class="hero-lottie-container" data-lottie="animations/services-code.json"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Detail -->
+  <section class="section">
+    <div class="container">
+      <!-- Web -->
+      <div class="about-story" style="margin-bottom: 80px;" data-animate="fadeLeft">
+        <div>
+          <span class="section-label">01</span>
+          <h2 class="section-title" style="text-align: left;">Sites Internet</h2>
+          <p style="color: var(--gris-texte); line-height: 1.8; margin-bottom: 16px;">Nous concevons et développons des sites web modernes, performants et adaptés à vos besoins. Que ce soit un site vitrine pour présenter votre activité, une boutique en ligne pour vendre vos produits, ou une application web complexe, nous avons l'expertise nécessaire.</p>
+          <p style="color: var(--gris-texte); line-height: 1.8; margin-bottom: 24px;">Nos sites sont conçus avec une approche mobile-first, garantissant une expérience utilisateur optimale sur tous les appareils. Nous utilisons les dernières technologies pour assurer performance, sécurité et référencement naturel.</p>
+          <div class="portfolio-tags" style="margin-bottom: 24px;">
+            <span class="portfolio-tag">React</span>
+            <span class="portfolio-tag">Vue.js</span>
+            <span class="portfolio-tag">Node.js</span>
+            <span class="portfolio-tag">Python</span>
+            <span class="portfolio-tag">WordPress</span>
+          </div>
+          <a href="contact.html?sujet=Projet web" class="btn btn-primary">Demander un devis</a>
+        </div>
+        <img src="https://images.unsplash.com/photo-1547658719-da2b51169166?w=800&q=80" alt="Web Development" style="border-radius: var(--radius-lg);">
+      </div>
+
+      <!-- Mobile -->
+      <div class="about-story" style="margin-bottom: 80px;" data-animate="fadeRight">
+        <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&q=80" alt="Mobile Development" style="border-radius: var(--radius-lg); order: -1;">
+        <div>
+          <span class="section-label">02</span>
+          <h2 class="section-title" style="text-align: left;">Applications Mobiles</h2>
+          <p style="color: var(--gris-texte); line-height: 1.8; margin-bottom: 16px;">Nous créons des applications mobiles natives et cross-platform pour iOS et Android. Notre expertise couvre tout le cycle de développement, de la conception UI/UX au déploiement sur les stores.</p>
+          <p style="color: var(--gris-texte); line-height: 1.8; margin-bottom: 24px;">En utilisant Flutter et React Native, nous développons des applications performantes avec un seul codebase, réduisant les coûts et le temps de développement tout en maintenant une qualité native.</p>
+          <div class="portfolio-tags" style="margin-bottom: 24px;">
+            <span class="portfolio-tag">Flutter</span>
+            <span class="portfolio-tag">React Native</span>
+            <span class="portfolio-tag">iOS</span>
+            <span class="portfolio-tag">Android</span>
+            <span class="portfolio-tag">Firebase</span>
+          </div>
+          <a href="contact.html?sujet=App mobile" class="btn btn-primary">Demander un devis</a>
+        </div>
+      </div>
+
+      <!-- Desktop -->
+      <div class="about-story" style="margin-bottom: 80px;" data-animate="fadeLeft">
+        <div>
+          <span class="section-label">03</span>
+          <h2 class="section-title" style="text-align: left;">Applications Desktop</h2>
+          <p style="color: var(--gris-texte); line-height: 1.8; margin-bottom: 16px;">Nous développons des logiciels desktop robustes et performants pour Windows, macOS et Linux. Nos solutions sont adaptées aux besoins spécifiques des entreprises et des organisations.</p>
+          <p style="color: var(--gris-texte); line-height: 1.8; margin-bottom: 24px;">Que vous ayez besoin d'un logiciel de gestion, d'un outil de productivité ou d'une application métier complexe, nous concevons des solutions sur mesure avec des interfaces intuitives et des performances optimales.</p>
+          <div class="portfolio-tags" style="margin-bottom: 24px;">
+            <span class="portfolio-tag">Python</span>
+            <span class="portfolio-tag">Electron</span>
+            <span class="portfolio-tag">Tauri</span>
+            <span class="portfolio-tag">SQLite</span>
+            <span class="portfolio-tag">PostgreSQL</span>
+          </div>
+          <a href="contact.html?sujet=App desktop" class="btn btn-primary">Demander un devis</a>
+        </div>
+        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80" alt="Desktop Development" style="border-radius: var(--radius-lg);">
+      </div>
+
+      <!-- Design -->
+      <div class="about-story" style="margin-bottom: 80px;" data-animate="fadeRight">
+        <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80" alt="Graphic Design" style="border-radius: var(--radius-lg); order: -1;">
+        <div>
+          <span class="section-label">04</span>
+          <h2 class="section-title" style="text-align: left;">Design Graphique</h2>
+          <p style="color: var(--gris-texte); line-height: 1.8; margin-bottom: 16px;">Notre équipe de designers crée des identités visuelles percutantes et des interfaces utilisateur intuitives. Du logo à la charte graphique complète, nous donnons vie à votre marque.</p>
+          <p style="color: var(--gris-texte); line-height: 1.8; margin-bottom: 24px;">Nous combinons esthétique et fonctionnalité pour créer des designs qui captivent votre audience et renforcent votre image de marque. Chaque pixel est pensé pour servir votre communication.</p>
+          <div class="portfolio-tags" style="margin-bottom: 24px;">
+            <span class="portfolio-tag">Figma</span>
+            <span class="portfolio-tag">Adobe Illustrator</span>
+            <span class="portfolio-tag">Adobe Photoshop</span>
+            <span class="portfolio-tag">UI/UX</span>
+            <span class="portfolio-tag">Branding</span>
+          </div>
+          <a href="contact.html?sujet=Design" class="btn btn-primary">Demander un devis</a>
+        </div>
+      </div>
+
+      <!-- Photography -->
+      <div class="about-story" data-animate="fadeLeft">
+        <div>
+          <span class="section-label">05</span>
+          <h2 class="section-title" style="text-align: left;">Photographie</h2>
+          <p style="color: var(--gris-texte); line-height: 1.8; margin-bottom: 16px;">Nous offrons des services de photographie professionnelle pour vos événements, portraits corporate, produits et projets créatifs. Notre approche artistique capture l'essence de chaque moment.</p>
+          <p style="color: var(--gris-texte); line-height: 1.8; margin-bottom: 24px;">De la prise de vue à la retouche finale, nous assurons une qualité professionnelle à chaque étape. Nos photos racontent votre histoire et mettent en valeur ce qui fait votre unicité.</p>
+          <div class="portfolio-tags" style="margin-bottom: 24px;">
+            <span class="portfolio-tag">Canon EOS R5</span>
+            <span class="portfolio-tag">Lightroom</span>
+            <span class="portfolio-tag">Photoshop</span>
+            <span class="portfolio-tag">Portrait</span>
+            <span class="portfolio-tag">Événementiel</span>
+          </div>
+          <a href="contact.html?sujet=Photographie" class="btn btn-primary">Demander un devis</a>
+        </div>
+        <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&q=80" alt="Photography" style="border-radius: var(--radius-lg);">
+      </div>
+    </div>
+  </section>
+
+  <!-- Technologies -->
+  <section class="section" style="background: var(--gris-fonce);" data-animate="fadeUp">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Notre Stack</span>
+        <h2 class="section-title">Technologies utilisées</h2>
+        <p class="section-subtitle">Des outils modernes pour des résultats professionnels</p>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; width: 100%; opacity: 1; visibility: visible;" data-stagger>
+        <div class="service-card" style="padding: 24px;">
+          <h3 style="font-family: var(--font-mono); font-size: 1rem;">HTML/CSS/JS</h3>
+        </div>
+        <div class="service-card" style="padding: 24px;">
+          <h3 style="font-family: var(--font-mono); font-size: 1rem;">React</h3>
+        </div>
+        <div class="service-card" style="padding: 24px;">
+          <h3 style="font-family: var(--font-mono); font-size: 1rem;">Python</h3>
+        </div>
+        <div class="service-card" style="padding: 24px;">
+          <h3 style="font-family: var(--font-mono); font-size: 1rem;">Flutter</h3>
+        </div>
+        <div class="service-card" style="padding: 24px;">
+          <h3 style="font-family: var(--font-mono); font-size: 1rem;">Node.js</h3>
+        </div>
+        <div class="service-card" style="padding: 24px;">
+          <h3 style="font-family: var(--font-mono); font-size: 1rem;">Figma</h3>
+        </div>
+        <div class="service-card" style="padding: 24px;">
+          <h3 style="font-family: var(--font-mono); font-size: 1rem;">Adobe CC</h3>
+        </div>
+        <div class="service-card" style="padding: 24px;">
+          <h3 style="font-family: var(--font-mono); font-size: 1rem;">PostgreSQL</h3>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact CTA -->
+  <section class="section" data-animate="fadeUp">
+    <div class="container">
+      <div class="contact-cta">
+        <h2>Un projet en tête ?</h2>
+        <p>Discutons de la meilleure solution pour vous</p>
+        <a href="contact.html" class="btn btn-white btn-lg">Nous contacter</a>
+      </div>
+    </div>
+  </section>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
