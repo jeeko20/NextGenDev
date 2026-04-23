@@ -41,17 +41,22 @@ if Config.CLOUDINARY_CLOUD_NAME:
 @app.route('/api/auth/register', methods=['POST'])
 def register():
     data = request.get_json()
+    username = data.get('username')
     email = data.get('email')
     password = data.get('password')
     name = data.get('name', 'Admin')
     
-    if not email or not password:
-        return jsonify({'error': 'Email et mot de passe requis'}), 400
+    if not username or not email or not password:
+        return jsonify({'error': 'Nom d\'utilisateur, email et mot de passe requis'}), 400
+    
+    if User.query.filter_by(username=username).first():
+        return jsonify({'error': 'Ce nom d\'utilisateur est déjà utilisé'}), 409
     
     if User.query.filter_by(email=email).first():
         return jsonify({'error': 'Cet email est déjà utilisé'}), 409
     
     user = User(
+        username=username,
         email=email,
         name=name,
         password_hash=generate_password_hash(password),
@@ -65,16 +70,16 @@ def register():
 @app.route('/api/auth/login', methods=['POST'])
 def login():
     data = request.get_json()
-    email = data.get('email')
+    username = data.get('username')
     password = data.get('password')
     
-    if not email or not password:
-        return jsonify({'error': 'Email et mot de passe requis'}), 400
+    if not username or not password:
+        return jsonify({'error': 'Nom d\'utilisateur et mot de passe requis'}), 400
     
-    user = User.query.filter_by(email=email).first()
+    user = User.query.filter_by(username=username).first()
     
     if not user or not check_password_hash(user.password_hash, password):
-        return jsonify({'error': 'Email ou mot de passe incorrect'}), 401
+        return jsonify({'error': 'Nom d\'utilisateur ou mot de passe incorrect'}), 401
     
     access_token = create_access_token(identity=user.id)
     return jsonify({
@@ -102,7 +107,15 @@ def update_current_user():
     data = request.get_json()
     if 'name' in data:
         user.name = data['name']
+    if 'username' in data:
+        existing = User.query.filter_by(username=data['username']).first()
+        if existing and existing.id != user.id:
+            return jsonify({'error': 'Ce nom d\'utilisateur est déjà utilisé'}), 409
+        user.username = data['username']
     if 'email' in data:
+        existing = User.query.filter_by(email=data['email']).first()
+        if existing and existing.id != user.id:
+            return jsonify({'error': 'Cet email est déjà utilisé'}), 409
         user.email = data['email']
     if 'avatar_url' in data:
         user.avatar_url = data['avatar_url']
@@ -530,6 +543,7 @@ def internal_error(error):
 
 def create_tables():
     with app.app_context():
+        # Créer les tables manquantes sans supprimer les données existantes
         db.create_all()
         
         # Create default settings if not exists
@@ -541,6 +555,7 @@ def create_tables():
         if not User.query.first():
             admin = User(
                 email='admin@nextgendev.ht',
+                username='admin',
                 name='Admin NextGen',
                 password_hash=generate_password_hash('admin123'),
                 role='admin'

@@ -131,6 +131,7 @@ class User(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200))
+    username = db.Column(db.String(100), unique=True, nullable=False)
     email = db.Column(db.String(200), unique=True, nullable=False)
     password_hash = db.Column(db.String(200))
     avatar_url = db.Column(db.String(500))
@@ -141,6 +142,7 @@ class User(db.Model):
         return {
             'id': self.id,
             'name': self.name,
+            'username': self.username,
             'email': self.email,
             'avatar_url': self.avatar_url,
             'role': self.role
@@ -160,6 +162,7 @@ class SiteSettings(db.Model):
     linkedin_url = db.Column(db.String(500))
     contact_email = db.Column(db.String(200), default='contact@nextgendev.ht')
     contact_phone = db.Column(db.String(50))
+    whatsapp_number = db.Column(db.String(50))
     contact_address = db.Column(db.String(300))
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
@@ -176,5 +179,6 @@ class SiteSettings(db.Model):
             'linkedin_url': self.linkedin_url,
             'contact_email': self.contact_email,
             'contact_phone': self.contact_phone,
+            'whatsapp_number': self.whatsapp_number,
             'contact_address': self.contact_address
         }

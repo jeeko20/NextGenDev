@@ -52,10 +52,10 @@ class API {
   }
   
   // Auth
-  static async login(email, password) {
+  static async login(username, password) {
     return this.request('/auth/login', {
       method: 'POST',
-      body: { email, password }
+      body: { username, password }
     });
   }
   

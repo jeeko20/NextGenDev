@@ -3,34 +3,59 @@
 // ========================================
 
 class Auth {
+  static _safeStorageGet(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch (error) {
+      console.warn('LocalStorage inaccessible:', error);
+      return null;
+    }
+  }
+
+  static _safeStorageSet(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch (error) {
+      console.warn('LocalStorage inaccessible:', error);
+    }
+  }
+
+  static _safeStorageRemove(key) {
+    try {
+      localStorage.removeItem(key);
+    } catch (error) {
+      console.warn('LocalStorage inaccessible:', error);
+    }
+  }
+
   static getToken() {
-    return localStorage.getItem('access_token');
+    return this._safeStorageGet('access_token');
   }
   
   static setToken(token) {
-    localStorage.setItem('access_token', token);
+    this._safeStorageSet('access_token', token);
   }
   
   static removeToken() {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('user');
+    this._safeStorageRemove('access_token');
+    this._safeStorageRemove('user');
   }
   
   static getUser() {
-    const user = localStorage.getItem('user');
+    const user = this._safeStorageGet('user');
     return user ? JSON.parse(user) : null;
   }
   
   static setUser(user) {
-    localStorage.setItem('user', JSON.stringify(user));
+    this._safeStorageSet('user', JSON.stringify(user));
   }
   
   static isAuthenticated() {
     return !!this.getToken();
   }
   
-  static async login(email, password) {
-    const data = await API.login(email, password);
+  static async login(username, password) {
+    const data = await API.login(username, password);
     this.setToken(data.access_token);
     this.setUser(data.user);
     return data;

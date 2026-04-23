@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="js/lucide.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
@@ -86,7 +86,7 @@
             </div>
             <div>
               <h4>Email</h4>
-              <p>contact@nextgendev.ht</p>
+              <p id="contact-email">contact@nextgendev.ht</p>
             </div>
           </div>
           
@@ -96,17 +96,27 @@
             </div>
             <div>
               <h4>Localisation</h4>
-              <p>Delmas 33, Port-au-Prince, Haïti</p>
+              <p id="contact-address">Delmas 33, Port-au-Prince, Haïti</p>
             </div>
           </div>
           
           <div class="contact-info-item">
             <div class="contact-info-icon">
-              <i data-lucide="clock"></i>
+              <i data-lucide="phone"></i>
             </div>
             <div>
-              <h4>Horaires</h4>
-              <p>Lun - Ven, 9h - 17h</p>
+              <h4>Téléphone</h4>
+              <p id="contact-phone">+509...</p>
+            </div>
+          </div>
+          
+          <div class="contact-info-item">
+            <div class="contact-info-icon">
+              <i data-lucide="message-circle"></i>
+            </div>
+            <div>
+              <h4>WhatsApp</h4>
+              <p><a href="#" id="whatsapp-link" target="_blank">Contacter via WhatsApp</a></p>
             </div>
           </div>
           
@@ -167,6 +177,30 @@
       }
     });
     
+    // Load contact settings
+    async function loadContactSettings() {
+      try {
+        const settings = await API.getSettings();
+        if (settings) {
+          document.getElementById('contact-email').textContent = settings.contact_email || 'contact@nextgendev.ht';
+          document.getElementById('contact-phone').textContent = settings.contact_phone || '+509...';
+          document.getElementById('contact-address').textContent = settings.contact_address || 'Delmas 33, Port-au-Prince, Haïti';
+          
+          const whatsappLink = document.getElementById('whatsapp-link');
+          if (settings.whatsapp_number) {
+            const whatsappUrl = `https://wa.me/${settings.whatsapp_number.replace(/\D/g, '')}`;
+            whatsappLink.href = whatsappUrl;
+            whatsappLink.textContent = settings.whatsapp_number;
+          } else {
+            whatsappLink.href = '#';
+            whatsappLink.textContent = 'Numéro non configuré';
+          }
+        }
+      } catch (error) {
+        console.error('Error loading contact settings:', error);
+      }
+    }
+    
     // Pre-fill subject from URL
     const urlParams = new URLSearchParams(window.location.search);
     const subject = urlParams.get('sujet');
@@ -179,6 +213,11 @@
         }
       }
     }
+    
+    document.addEventListener('DOMContentLoaded', loadContactSettings);
   </script>
 </body>
 </html>
+
+
+

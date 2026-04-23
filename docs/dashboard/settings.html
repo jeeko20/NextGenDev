@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/styles.css">
   <link rel="stylesheet" href="../css/dashboard.css">
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="../js/lucide.min.js"></script>
 </head>
 <body>
   <div class="dashboard">
@@ -26,6 +26,8 @@
           <li><a href="blog.html"><i data-lucide="file-text"></i> Blog</a></li>
           <li><a href="messages.html"><i data-lucide="mail"></i> Messages</a></li>
           <li><a href="settings.html" class="active"><i data-lucide="settings"></i> Paramètres</a></li>
+         <li><a href="../index.html"><i data-lucide="settings"></i>Home</a></li>
+          
         </ul>
       </nav>
       <div class="sidebar-footer">
@@ -69,13 +71,19 @@
                   <input type="text" id="profile-name" placeholder="Votre nom">
                 </div>
                 <div class="form-group">
+                  <label for="profile-username">Nom d'utilisateur</label>
+                  <input type="text" id="profile-username" placeholder="votre_username">
+                </div>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="form-group">
                   <label for="profile-email">Email</label>
                   <input type="email" id="profile-email" placeholder="votre@email.com">
                 </div>
-              </div>
-              <div class="form-group">
-                <label for="profile-password">Nouveau mot de passe</label>
-                <input type="password" id="profile-password" placeholder="Laisser vide pour ne pas changer">
+                <div class="form-group">
+                  <label for="profile-password">Nouveau mot de passe</label>
+                  <input type="password" id="profile-password" placeholder="Laisser vide pour ne pas changer">
+                </div>
               </div>
               <button type="button" class="btn btn-primary" onclick="saveProfile()">Enregistrer</button>
             </form>
@@ -102,6 +110,10 @@
               <div class="form-group">
                 <label for="site-phone">Téléphone</label>
                 <input type="text" id="site-phone" placeholder="+509...">
+              </div>
+              <div class="form-group">
+                <label for="site-whatsapp">WhatsApp</label>
+                <input type="text" id="site-whatsapp" placeholder="+509...">
               </div>
               <div class="form-group">
                 <label for="site-address">Adresse</label>
@@ -194,6 +206,7 @@
           document.getElementById('site-description').value = settings.site_description || '';
           document.getElementById('site-email').value = settings.contact_email || '';
           document.getElementById('site-phone').value = settings.contact_phone || '';
+          document.getElementById('site-whatsapp').value = settings.whatsapp_number || '';
           document.getElementById('site-address').value = settings.contact_address || '';
           document.getElementById('social-facebook').value = settings.facebook_url || '';
           document.getElementById('social-instagram').value = settings.instagram_url || '';
@@ -204,6 +217,7 @@
         const user = Auth.getUser();
         if (user) {
           document.getElementById('profile-name').value = user.name || '';
+          document.getElementById('profile-username').value = user.username || '';
           document.getElementById('profile-email').value = user.email || '';
         }
       } catch (error) { console.error('Error loading settings:', error); }
@@ -212,13 +226,14 @@
     async function saveProfile() {
       const data = {
         name: document.getElementById('profile-name').value,
+        username: document.getElementById('profile-username').value,
         email: document.getElementById('profile-email').value,
         password: document.getElementById('profile-password').value
       };
       try {
         await API.request('/auth/me', { method: 'PUT', body: data });
         const user = Auth.getUser();
-        if (user) { user.name = data.name; user.email = data.email; Auth.setUser(user); }
+        if (user) { user.name = data.name; user.username = data.username; user.email = data.email; Auth.setUser(user); }
         Utils.toast('Profil mis à jour !', 'success');
         document.getElementById('profile-password').value = '';
       } catch (error) { Utils.toast('Erreur', 'error'); }
@@ -230,6 +245,7 @@
         site_description: document.getElementById('site-description').value,
         contact_email: document.getElementById('site-email').value,
         contact_phone: document.getElementById('site-phone').value,
+        whatsapp_number: document.getElementById('site-whatsapp').value,
         contact_address: document.getElementById('site-address').value
       };
       try { await API.updateSettings(data); Utils.toast('Paramètres enregistrés !', 'success'); }
@@ -255,3 +271,7 @@
   </script>
 </body>
 </html>
+
+
+
+
