@@ -25,9 +25,32 @@ class Portfolio(db.Model):
             'category': self.category,
             'technologies': json.loads(self.technologies) if self.technologies else [],
             'image_url': self.image_url,
+            'images': [img.to_dict() for img in self.images],
             'project_url': self.project_url,
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None
+        }
+
+class PortfolioImage(db.Model):
+    __tablename__ = 'portfolio_images'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    portfolio_id = db.Column(db.Integer, db.ForeignKey('portfolios.id'), nullable=False)
+    image_url = db.Column(db.String(500), nullable=False)
+    alt_text = db.Column(db.String(200))
+    order = db.Column(db.Integer, default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    portfolio = db.relationship('Portfolio', backref=db.backref('images', lazy=True, order_by='PortfolioImage.order'))
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'portfolio_id': self.portfolio_id,
+            'image_url': self.image_url,
+            'alt_text': self.alt_text,
+            'order': self.order,
+            'created_at': self.created_at.isoformat() if self.created_at else None
         }
 
 class GalleryImage(db.Model):

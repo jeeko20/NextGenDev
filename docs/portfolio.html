@@ -89,22 +89,24 @@
       const grid = document.getElementById('portfolio-grid');
       
       grid.innerHTML = portfolios.map(item => `
-        <div class="portfolio-card" data-animate="fadeUp">
-          <div class="portfolio-image">
-            <img src="${item.image_url || 'images/placeholder.jpg'}" alt="${item.title}" loading="lazy">
-            <div class="portfolio-overlay">
-              <i data-lucide="external-link" style="width:48px;height:48px;"></i>
+        <a href="portfolio-detail.html?id=${item.id}" class="portfolio-card-link">
+          <div class="portfolio-card" data-animate="fadeUp">
+            <div class="portfolio-image">
+              <img src="${item.image_url || 'images/placeholder.jpg'}" alt="${item.title}" loading="lazy">
+              <div class="portfolio-overlay">
+                <i data-lucide="external-link" style="width:48px;height:48px;"></i>
+              </div>
+            </div>
+            <div class="portfolio-body">
+              <h3>${item.title}</h3>
+              <p>${item.description}</p>
+              <div class="portfolio-tags">
+                ${(item.technologies || []).slice(0, 4).map(t => `<span class="portfolio-tag">${t}</span>`).join('')}
+              </div>
+              ${item.project_url && item.project_url !== '#' ? `<span class="blog-link" style="margin-top: 12px;">Voir les détails →</span>` : '<span class="blog-link" style="margin-top: 12px;">Voir les détails →</span>'}
             </div>
           </div>
-          <div class="portfolio-body">
-            <h3>${item.title}</h3>
-            <p>${item.description}</p>
-            <div class="portfolio-tags">
-              ${(item.technologies || []).slice(0, 4).map(t => `<span class="portfolio-tag">${t}</span>`).join('')}
-            </div>
-            ${item.project_url && item.project_url !== '#' ? `<a href="${item.project_url}" target="_blank" class="blog-link" style="margin-top: 12px;">Voir le projet →</a>` : ''}
-          </div>
-        </div>
+        </a>
       `).join('');
       
       if (window.lucide && typeof lucide.createIcons === 'function') {

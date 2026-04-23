@@ -12,7 +12,7 @@ import cloudinary.uploader
 import cloudinary.api
 
 from config import Config
-from models import db, Portfolio, GalleryImage, Event, BlogPost, Message, User, SiteSettings
+from models import db, Portfolio, PortfolioImage, GalleryImage, Event, BlogPost, Message, User, SiteSettings
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -184,6 +184,54 @@ def delete_portfolio(id):
     db.session.delete(portfolio)
     db.session.commit()
     return jsonify({'message': 'Portfolio supprimé avec succès'}), 200
+
+# Portfolio Images Routes
+@app.route('/api/portfolios/<int:portfolio_id>/images', methods=['GET'])
+def get_portfolio_images(portfolio_id):
+    images = PortfolioImage.query.filter_by(portfolio_id=portfolio_id).order_by(PortfolioImage.order).all()
+    return jsonify([img.to_dict() for img in images]), 200
+
+@app.route('/api/portfolios/<int:portfolio_id>/images', methods=['POST'])
+@jwt_required()
+def add_portfolio_image(portfolio_id):
+    portfolio = Portfolio.query.get_or_404(portfolio_id)
+    data = request.get_json()
+    
+    # Get the next order number
+    max_order = db.session.query(db.func.max(PortfolioImage.order)).filter_by(portfolio_id=portfolio_id).scalar() or 0
+    
+    image = PortfolioImage(
+        portfolio_id=portfolio_id,
+        image_url=data.get('image_url'),
+        alt_text=data.get('alt_text'),
+        order=max_order + 1
+    )
+    
+    db.session.add(image)
+    db.session.commit()
+    return jsonify(image.to_dict()), 201
+
+@app.route('/api/portfolios/<int:portfolio_id>/images/<int:image_id>', methods=['DELETE'])
+@jwt_required()
+def delete_portfolio_image(portfolio_id, image_id):
+    image = PortfolioImage.query.filter_by(id=image_id, portfolio_id=portfolio_id).first_or_404()
+    db.session.delete(image)
+    db.session.commit()
+    return jsonify({'message': 'Image supprimée avec succès'}), 200
+
+@app.route('/api/portfolios/<int:portfolio_id>/images/reorder', methods=['PUT'])
+@jwt_required()
+def reorder_portfolio_images(portfolio_id):
+    data = request.get_json()
+    image_orders = data.get('image_orders', [])
+    
+    for order_data in image_orders:
+        image = PortfolioImage.query.filter_by(id=order_data['id'], portfolio_id=portfolio_id).first()
+        if image:
+            image.order = order_data['order']
+    
+    db.session.commit()
+    return jsonify({'message': 'Ordre des images mis à jour'}), 200
 
 # ============ GALLERY ROUTES ============
 
