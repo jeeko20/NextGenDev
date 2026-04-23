@@ -1243,6 +1243,21 @@ input, textarea, select {
   display: flex;
   gap: 16px;
   margin-bottom: 32px;
+  align-items: center;
+}
+
+.contact-link {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 32px;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.contact-link:hover .contact-info-icon {
+  background: rgba(59, 130, 246, 0.15);
 }
 
 .contact-info-icon {

@@ -80,7 +80,7 @@
           <span class="section-label">INFORMATIONS</span>
           <h2 class="section-title" style="text-align: left; margin-bottom: 32px; font-size: 1.75rem;">Nos coordonnées</h2>
           
-          <div class="contact-info-item">
+          <a class="contact-info-item contact-link" id="email-card" href="mailto:contact@nextgendev.ht">
             <div class="contact-info-icon">
               <i data-lucide="mail"></i>
             </div>
@@ -88,9 +88,9 @@
               <h4>Email</h4>
               <p id="contact-email">contact@nextgendev.ht</p>
             </div>
-          </div>
+          </a>
           
-          <div class="contact-info-item">
+          <a class="contact-info-item contact-link" id="address-card" href="https://www.google.com/maps/search/?api=1&query=Delmas+33%2C+Port-au-Prince%2C+Ha%C3%AFti" target="_blank">
             <div class="contact-info-icon">
               <i data-lucide="map-pin"></i>
             </div>
@@ -98,9 +98,9 @@
               <h4>Localisation</h4>
               <p id="contact-address">Delmas 33, Port-au-Prince, Haïti</p>
             </div>
-          </div>
+          </a>
           
-          <div class="contact-info-item">
+          <a class="contact-info-item contact-link" id="phone-card" href="tel:+50900000000">
             <div class="contact-info-icon">
               <i data-lucide="phone"></i>
             </div>
@@ -108,17 +108,17 @@
               <h4>Téléphone</h4>
               <p id="contact-phone">+509...</p>
             </div>
-          </div>
+          </a>
           
-          <div class="contact-info-item">
+          <a class="contact-info-item contact-link" id="whatsapp-card" href="#" target="_blank">
             <div class="contact-info-icon">
               <i data-lucide="message-circle"></i>
             </div>
             <div>
               <h4>WhatsApp</h4>
-              <p><a href="#" id="whatsapp-link" target="_blank">Contacter via WhatsApp</a></p>
+              <p id="contact-whatsapp">Contacter via WhatsApp</p>
             </div>
-          </div>
+          </a>
           
           <div class="contact-info-item">
             <div class="contact-info-icon">
@@ -182,18 +182,35 @@
       try {
         const settings = await API.getSettings();
         if (settings) {
-          document.getElementById('contact-email').textContent = settings.contact_email || 'contact@nextgendev.ht';
-          document.getElementById('contact-phone').textContent = settings.contact_phone || '+509...';
-          document.getElementById('contact-address').textContent = settings.contact_address || 'Delmas 33, Port-au-Prince, Haïti';
+          const email = settings.contact_email || 'contact@nextgendev.ht';
+          const phone = settings.contact_phone || '+509...';
+          const address = settings.contact_address || 'Delmas 33, Port-au-Prince, Haïti';
+          const whatsapp = settings.whatsapp_number || '';
           
-          const whatsappLink = document.getElementById('whatsapp-link');
-          if (settings.whatsapp_number) {
-            const whatsappUrl = `https://wa.me/${settings.whatsapp_number.replace(/\D/g, '')}`;
-            whatsappLink.href = whatsappUrl;
-            whatsappLink.textContent = settings.whatsapp_number;
+          const emailLink = document.getElementById('email-card');
+          const phoneLink = document.getElementById('phone-card');
+          const addressLink = document.getElementById('address-card');
+          const whatsappCard = document.getElementById('whatsapp-card');
+          const emailLabel = document.getElementById('contact-email');
+          const phoneLabel = document.getElementById('contact-phone');
+          const addressLabel = document.getElementById('contact-address');
+          const whatsappLabel = document.getElementById('contact-whatsapp');
+
+          emailLabel.textContent = email;
+          phoneLabel.textContent = phone;
+          addressLabel.textContent = address;
+          whatsappLabel.textContent = whatsapp ? whatsapp : 'Contacter via WhatsApp';
+
+          emailLink.href = `mailto:${email}`;
+          phoneLink.href = `tel:${phone.replace(/\D/g, '')}`;
+          addressLink.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+
+          if (whatsapp) {
+            whatsappCard.href = `https://wa.me/${whatsapp.replace(/\D/g, '')}`;
+            whatsappCard.target = '_blank';
           } else {
-            whatsappLink.href = '#';
-            whatsappLink.textContent = 'Numéro non configuré';
+            whatsappCard.href = '#';
+            whatsappCard.removeAttribute('target');
           }
         }
       } catch (error) {
