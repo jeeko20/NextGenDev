@@ -156,9 +156,15 @@
         });
 
       // Update project link
+      const projectLink = document.getElementById('project-link');
+      const projectLinkContainer = document.getElementById('project-link-container');
       if (currentPortfolio.project_url && currentPortfolio.project_url !== '#') {
-        document.getElementById('project-link').href = currentPortfolio.project_url;
-        document.getElementById('project-link-container').style.display = 'block';
+        projectLink.href = currentPortfolio.project_url;
+        projectLink.target = '_blank';
+        projectLink.rel = 'noopener noreferrer';
+        projectLinkContainer.style.display = 'block';
+      } else {
+        projectLinkContainer.style.display = 'none';
       }
 
       // Render gallery
