@@ -7,6 +7,10 @@
 const API_BASE_URL = 'https://nextgendev-n85n.onrender.com/api';
 
 class API {
+  static delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   static async request(endpoint, options = {}) {
     const url = `${API_BASE_URL}${endpoint}`;
     
@@ -44,19 +48,47 @@ class API {
         config.body = typeof options.body === 'object' ? JSON.stringify(options.body) : options.body;
       }
     }
-    
-    try {
-      const response = await fetch(url, config);
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.error || `HTTP ${response.status}`);
+
+    const retries = Number.isInteger(options.retries) ? options.retries : 2;
+    const retryDelay = Number.isInteger(options.retryDelay) ? options.retryDelay : 300;
+
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      try {
+        const response = await fetch(url, config);
+        const responseText = await response.text();
+        let data;
+
+        try {
+          data = responseText ? JSON.parse(responseText) : null;
+        } catch (parseError) {
+          console.warn('Unable to parse JSON response:', parseError, responseText);
+          data = null;
+        }
+
+        if (!response.ok) {
+          const errorMessage = (data && data.error) ? data.error : `HTTP ${response.status}`;
+          if (attempt < retries && response.status >= 500) {
+            await API.delay(retryDelay * (attempt + 1));
+            continue;
+          }
+          throw new Error(errorMessage);
+        }
+
+        return data;
+      } catch (error) {
+        const isNetworkError = error instanceof TypeError || error.message === 'Failed to fetch';
+        const shouldRetry = attempt < retries && isNetworkError;
+
+        console.warn(`API request attempt ${attempt + 1} failed for ${url}:`, error);
+
+        if (shouldRetry) {
+          await API.delay(retryDelay * (attempt + 1));
+          continue;
+        }
+
+        console.error('API Error:', error);
+        throw error;
       }
-      
-      return data;
-    } catch (error) {
-      console.error('API Error:', error);
-      throw error;
     }
   }
   
