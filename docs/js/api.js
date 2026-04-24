@@ -2,32 +2,47 @@
 // NextGen Dev - API Client
 // ========================================
 
-let API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-  ? 'http://localhost:5000/api'
-  : 'https://nextgendev-n85n.onrender.com/api';
-
-const ONLINE_API_URL = 'https://nextgendev-n85n.onrender.com/api';
+// Décommentez la ligne ci-dessous si vous voulez tester avec le serveur local
+// const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://nextgendev-n85n.onrender.com/api';
 
 class API {
-  static async request(endpoint, options = {}, isRetry = false) {
+  static async request(endpoint, options = {}) {
     const url = `${API_BASE_URL}${endpoint}`;
     
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-      },
-      ...options
-    };
-    
-    // Add auth token if available
-    const token = localStorage.getItem('access_token');
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
+    // Construction propre des headers pour éviter les problèmes CORS / preflight (OPTIONS)
+    const headers = {};
+    if (options.headers) {
+      Object.assign(headers, options.headers);
     }
     
-    if (config.body && typeof config.body === 'object' && !(config.body instanceof FormData)) {
-      config.body = JSON.stringify(config.body);
+    // N'ajouter le token que s'il est vraiment valide et que skipAuth n'est pas true
+    if (!options.skipAuth) {
+      try {
+        const token = localStorage.getItem('access_token');
+        if (token && token !== 'null' && token !== 'undefined' && token.trim() !== '') {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+      } catch (error) {
+        // Ignore localStorage access errors (tracking prevention)
+        console.warn('localStorage access blocked:', error);
+      }
+    }
+    
+    const config = {
+      method: options.method || 'GET',
+      headers: headers,
+      mode: 'cors'
+    };
+    
+    // Ajouter Content-Type et stringifier le body uniquement si nécessaire
+    if (config.method !== 'GET' && options.body) {
+      if (options.body instanceof FormData) {
+        config.body = options.body;
+      } else {
+        headers['Content-Type'] = 'application/json';
+        config.body = typeof options.body === 'object' ? JSON.stringify(options.body) : options.body;
+      }
     }
     
     try {
@@ -40,12 +55,6 @@ class API {
       
       return data;
     } catch (error) {
-      // Basculement automatique si l'API localhost est injoignable
-      if (!isRetry && API_BASE_URL === 'http://localhost:5000/api') {
-        console.warn("Serveur local injoignable. Basculement sur l'API de secours (Render)...");
-        API_BASE_URL = ONLINE_API_URL;
-        return this.request(endpoint, options, true);
-      }
       console.error('API Error:', error);
       throw error;
     }
@@ -73,7 +82,7 @@ class API {
   // Portfolios
   static async getPortfolios(category) {
     const query = category ? `?category=${encodeURIComponent(category)}` : '';
-    return this.request(`/portfolios${query}`);
+    return this.request(`/portfolios${query}`, { skipAuth: true });
   }
   
   static async getPortfolio(id) {
@@ -95,7 +104,7 @@ class API {
   // Gallery
   static async getGallery(category) {
     const query = category ? `?category=${encodeURIComponent(category)}` : '';
-    return this.request(`/gallery${query}`);
+    return this.request(`/gallery${query}`, { skipAuth: true });
   }
   
   static async createGalleryImage(data) {

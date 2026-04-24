@@ -92,20 +92,22 @@ const Animations = {
     const grids = document.querySelectorAll('[data-stagger]');
     grids.forEach(grid => {
       const children = grid.children;
-      gsap.fromTo(children, 
-        { y: 40, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.6,
-          stagger: 0.1,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: grid,
-            start: 'top 80%'
+      if (children.length > 0) {
+        gsap.fromTo(children, 
+          { y: 40, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.6,
+            stagger: 0.1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: grid,
+              start: 'top 80%'
+            }
           }
-        }
-      );
+        );
+      }
     });
     }, 100);
   },

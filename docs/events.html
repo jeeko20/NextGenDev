@@ -77,22 +77,27 @@
       
       try {
         const st = status === 'all' ? '' : status;
+        console.log('Loading events for status:', status);
         const events = await API.getEvents(st);
+        console.log('Received events:', events);
         
-        if (events.length === 0) {
+        if (!events || events.length === 0) {
           Utils.showEmpty(container, 'Aucun événement dans cette catégorie');
           return;
         }
         
         renderEvents(events);
       } catch (error) {
-        console.error('Error loading events:', error);
-        container.innerHTML = '<p style="text-align:center;color:var(--gris-texte);padding:40px;">Erreur de chargement. Veuillez réessayer.</p>';
+        console.error('Error in loadEvents:', error);
+        container.innerHTML = `<p style="text-align:center;color:var(--gris-texte);padding:40px;">Erreur de chargement : ${error.message}. Veuillez réessayer.</p>`;
       }
     }
     
     function renderEvents(events) {
       const container = document.getElementById('events-container');
+      if (!container) return;
+      
+      console.log('Rendering', events.length, 'events');
       
       container.innerHTML = events.map(event => {
         const dateObj = new Date(event.date);
@@ -102,7 +107,7 @@
         const isUpcoming = event.status === 'À venir';
         
         return `
-          <div class="event-card" data-animate="fadeUp">
+          <div class="event-card">
             <div class="event-image">
               <img src="${event.image_url || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800'}" alt="${event.title}" loading="lazy">
             </div>

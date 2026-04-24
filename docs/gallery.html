@@ -52,21 +52,6 @@
     </div>
   </section>
 
-  <!-- Lightbox -->
-  <div class="lightbox" id="lightbox">
-    <img class="lightbox-img" id="lightbox-img" src="" alt="">
-    <div class="lightbox-close" onclick="closeLightbox()">
-      <i data-lucide="x" style="width:24px;height:24px;"></i>
-    </div>
-    <div class="lightbox-nav prev" onclick="navigateLightbox(-1)">
-      <i data-lucide="chevron-left" style="width:24px;height:24px;"></i>
-    </div>
-    <div class="lightbox-nav next" onclick="navigateLightbox(1)">
-      <i data-lucide="chevron-right" style="width:24px;height:24px;"></i>
-    </div>
-    <div class="lightbox-info" id="lightbox-info"></div>
-  </div>
-
   <div id="footer-placeholder"></div>
 
   <script src="js/api.js"></script>
@@ -86,35 +71,74 @@
       
       try {
         const cat = category === 'all' ? '' : category;
+        console.log('Loading gallery for category:', category);
         allGalleryImages = await API.getGallery(cat);
+        console.log('Received images:', allGalleryImages);
         
-        if (allGalleryImages.length === 0) {
+        if (!allGalleryImages || allGalleryImages.length === 0) {
           Utils.showEmpty(grid, 'Aucune photo dans cette catégorie');
           return;
         }
         
         renderGallery(allGalleryImages);
       } catch (error) {
-        console.error('Error loading gallery:', error);
-        grid.innerHTML = '<p style="text-align:center;color:var(--gris-texte);padding:40px;">Erreur de chargement. Veuillez réessayer.</p>';
+        console.error('Error in loadGallery:', error);
+        grid.innerHTML = `<p style="text-align:center;color:var(--gris-texte);padding:40px;">Erreur de chargement : ${error.message}. Veuillez réessayer.</p>`;
       }
     }
     
-    function renderGallery(images) {
-      const grid = document.getElementById('gallery-grid');
-      
-      grid.innerHTML = images.map((img, i) => `
-        <div class="gallery-item ${i % 5 === 0 ? 'wide' : ''}" onclick="openLightbox(${i})" data-animate="fadeUp">
-          <img src="${img.image_url}" alt="${img.title}" loading="lazy">
-          <div class="gallery-item-overlay">
-            <i data-lucide="zoom-in" style="width:32px;height:32px;"></i>
-            <span>${img.title}</span>
-          </div>
-        </div>
-      `).join('');
-      
-      lucide.createIcons();
-    }
+function renderGallery(images) {
+  const grid = document.getElementById('gallery-grid');
+  if (!grid) return;
+  
+  console.log('Rendering', images.length, 'images to grid');
+  
+  // Afficher la première URL pour debug
+  if (images.length > 0) {
+    console.log('First image URL:', images[0].image_url);
+  }
+  
+  grid.innerHTML = images.map((img, i) => `
+    <div class="gallery-item">
+      <img src="${img.image_url}" 
+           alt="${img.title || 'Photo'}" 
+           onclick="openGalleryLightbox(${i})"
+           onerror="console.error('Image load error:', '${img.image_url}'); this.src='https://picsum.photos/400/300?random=${i}'">
+      <div class="gallery-item-overlay">
+        <i data-lucide="zoom-in"></i>
+        <span>${img.title || ''}</span>
+      </div>
+    </div>
+  `).join('');
+  
+  lucide.createIcons();
+  
+  // Force l'affichage de toutes les images après le rendu
+  setTimeout(() => {
+    document.querySelectorAll('.gallery-item').forEach(el => {
+      el.style.opacity = '1';
+      el.style.visibility = 'visible';
+      el.style.transform = 'none';
+    });
+    document.querySelectorAll('.gallery-item img').forEach(img => {
+      img.style.opacity = '1';
+      img.style.visibility = 'visible';
+    });
+  }, 100);
+  
+  // Désactivez temporairement les animations pour tester
+  // if (typeof Animations !== 'undefined') {
+  //   Animations.initScrollAnimations();
+  // }
+}
+    // Helper global pour la lightbox
+    window.openGalleryLightbox = function(index) {
+      const lightboxData = allGalleryImages.map(img => ({ 
+        url: img.image_url, 
+        title: img.title || '' 
+      }));
+      Utils.Lightbox.open(lightboxData, index);
+    };
     
     function filterGallery(category) {
       document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -123,37 +147,7 @@
       loadGallery(category);
     }
     
-    function openLightbox(index) {
-      currentLightboxIndex = index;
-      const lightbox = document.getElementById('lightbox');
-      const img = document.getElementById('lightbox-img');
-      const info = document.getElementById('lightbox-info');
-      
-      const item = allGalleryImages[index];
-      img.src = item.image_url;
-      info.innerHTML = `<h4>${item.title}</h4>${item.description ? `<p>${item.description}</p>` : ''}`;
-      
-      lightbox.classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
-    
-    function closeLightbox() {
-      document.getElementById('lightbox').classList.remove('active');
-      document.body.style.overflow = '';
-    }
-    
-    function navigateLightbox(direction) {
-      currentLightboxIndex += direction;
-      if (currentLightboxIndex < 0) currentLightboxIndex = allGalleryImages.length - 1;
-      if (currentLightboxIndex >= allGalleryImages.length) currentLightboxIndex = 0;
-      openLightbox(currentLightboxIndex);
-    }
-    
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeLightbox();
-      if (e.key === 'ArrowLeft') navigateLightbox(-1);
-      if (e.key === 'ArrowRight') navigateLightbox(1);
-    });
+    // Unified Lightbox logic is now in Utils.js
     
     document.addEventListener('DOMContentLoaded', () => {
       loadGallery();

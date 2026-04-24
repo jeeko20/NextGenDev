@@ -216,21 +216,6 @@
   <!-- Footer -->
   <div id="footer-placeholder"></div>
 
-  <!-- Lightbox -->
-  <div class="lightbox" id="lightbox">
-    <img class="lightbox-img" id="lightbox-img" src="" alt="">
-    <div class="lightbox-close" onclick="closeLightbox()">
-      <i data-lucide="x" style="width:24px;height:24px;"></i>
-    </div>
-    <div class="lightbox-nav prev" onclick="navigateLightbox(-1)">
-      <i data-lucide="chevron-left" style="width:24px;height:24px;"></i>
-    </div>
-    <div class="lightbox-nav next" onclick="navigateLightbox(1)">
-      <i data-lucide="chevron-right" style="width:24px;height:24px;"></i>
-    </div>
-    <div class="lightbox-info" id="lightbox-info"></div>
-  </div>
-
   <!-- Scripts -->
   <script src="js/api.js"></script>
   <script src="js/auth.js"></script>
@@ -258,7 +243,7 @@
               </div>
               <div class="portfolio-body">
                 <h3>${item.title}</h3>
-                <p>${item.description}</p>
+                <p>${Utils.truncate(item.description, 100)}</p>
                 <div class="portfolio-tags">
                   ${(item.technologies || []).slice(0, 3).map(t => `<span class="portfolio-tag">${t}</span>`).join('')}
                 </div>
@@ -268,6 +253,11 @@
         `).join('');
         
         lucide.createIcons();
+        
+        // Re-initialize animations for the new content
+        if (typeof Animations !== 'undefined') {
+          Animations.initScrollAnimations();
+        }
       } catch (error) {
         console.error('Error loading portfolio:', error);
         grid.innerHTML = '<p style="text-align:center;color:var(--gris-texte);">Erreur de chargement</p>';
@@ -277,18 +267,19 @@
     // Load gallery preview
     let galleryImages = [];
     let currentLightboxIndex = 0;
-    
+    let homeGalleryImages = [];
+
     async function loadGalleryPreview() {
       const grid = document.getElementById('gallery-grid');
       if (!grid) return;
       
       try {
         const images = await API.getGallery();
-        galleryImages = images.slice(0, 8);
+        homeGalleryImages = images.slice(0, 8);
         
-        grid.innerHTML = galleryImages.map((img, i) => `
-          <div class="gallery-item ${i === 0 ? 'wide' : ''}" onclick="openLightbox(${i})">
-            <img src="${img.image_url}" alt="${img.title}" loading="lazy">
+        grid.innerHTML = homeGalleryImages.map((img, i) => `
+          <div class="gallery-item" onclick="openHomeGalleryLightbox(${i})">
+            <img src="${img.image_url}" alt="${img.title}" onerror="this.src='https://via.placeholder.com/400x300?text=Image+Error'; console.error('Failed to load image:', '${img.image_url}')">
             <div class="gallery-item-overlay">
               <i data-lucide="zoom-in" style="width:32px;height:32px;"></i>
               <span>${img.title}</span>
@@ -297,45 +288,22 @@
         `).join('');
         
         lucide.createIcons();
+        
+        // Re-initialize animations for the new content
+        if (typeof Animations !== 'undefined') {
+          Animations.initScrollAnimations();
+        }
       } catch (error) {
         console.error('Error loading gallery:', error);
       }
     }
+
+    window.openHomeGalleryLightbox = function(index) {
+      const data = homeGalleryImages.map(img => ({ url: img.image_url, title: img.title }));
+      Utils.Lightbox.open(data, index);
+    };
     
-    // Lightbox functions
-    function openLightbox(index) {
-      currentLightboxIndex = index;
-      const lightbox = document.getElementById('lightbox');
-      const img = document.getElementById('lightbox-img');
-      const info = document.getElementById('lightbox-info');
-      
-      const item = galleryImages[index];
-      img.src = item.image_url;
-      info.innerHTML = `<h4>${item.title}</h4>${item.description ? `<p>${item.description}</p>` : ''}`;
-      
-      lightbox.classList.add('active');
-      document.body.style.overflow = 'hidden';
-      lucide.createIcons();
-    }
-    
-    function closeLightbox() {
-      document.getElementById('lightbox').classList.remove('active');
-      document.body.style.overflow = '';
-    }
-    
-    function navigateLightbox(direction) {
-      currentLightboxIndex += direction;
-      if (currentLightboxIndex < 0) currentLightboxIndex = galleryImages.length - 1;
-      if (currentLightboxIndex >= galleryImages.length) currentLightboxIndex = 0;
-      openLightbox(currentLightboxIndex);
-    }
-    
-    // Keyboard navigation
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeLightbox();
-      if (e.key === 'ArrowLeft') navigateLightbox(-1);
-      if (e.key === 'ArrowRight') navigateLightbox(1);
-    });
+    // Unified Lightbox logic is now in Utils.js
     
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
@@ -345,7 +313,3 @@
   </script>
 </body>
 </html>
-
-
-
-

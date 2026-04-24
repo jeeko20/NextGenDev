@@ -41,24 +41,6 @@
           <!-- Images will be loaded here -->
         </div>
 
-        <div class="lightbox-overlay" id="lightbox-overlay" aria-hidden="true">
-          <button class="lightbox-close" id="lightbox-close" aria-label="Fermer la galerie">
-            <i data-lucide="x"></i>
-          </button>
-          <div class="lightbox-content">
-            <button class="lightbox-nav lightbox-prev" id="lightbox-prev" aria-label="Image précédente">
-              <i data-lucide="chevron-left"></i>
-            </button>
-            <div class="lightbox-image-wrapper">
-              <img src="" alt="" id="lightbox-image">
-            </div>
-            <button class="lightbox-nav lightbox-next" id="lightbox-next" aria-label="Image suivante">
-              <i data-lucide="chevron-right"></i>
-            </button>
-          </div>
-          <div class="lightbox-caption" id="lightbox-caption"></div>
-        </div>
-
         <div class="project-info">
           <div class="project-description" id="project-description">
             <!-- Description will be loaded here -->
@@ -230,46 +212,6 @@
       }
     }
 
-    function attachCarouselClickHandlers() {
-      document.querySelectorAll('.carousel-slide img').forEach((img, index) => {
-        img.style.cursor = 'zoom-in';
-        img.addEventListener('click', () => openLightbox(index));
-      });
-    }
-
-    function openLightbox(index) {
-      lightboxIndex = index;
-      updateLightbox();
-      const overlay = document.getElementById('lightbox-overlay');
-      overlay.classList.add('active');
-      overlay.setAttribute('aria-hidden', 'false');
-    }
-
-    function closeLightbox() {
-      const overlay = document.getElementById('lightbox-overlay');
-      overlay.classList.remove('active');
-      overlay.setAttribute('aria-hidden', 'true');
-    }
-
-    function updateLightbox() {
-      const image = galleryImages[lightboxIndex];
-      const imgElement = document.getElementById('lightbox-image');
-      const caption = document.getElementById('lightbox-caption');
-      imgElement.src = image.image_url;
-      imgElement.alt = image.alt_text || currentPortfolio.title;
-      caption.textContent = image.alt_text || `${currentPortfolio.title} — Image ${lightboxIndex + 1}/${galleryImages.length}`;
-    }
-
-    function showNextLightbox() {
-      lightboxIndex = (lightboxIndex + 1) % galleryImages.length;
-      updateLightbox();
-    }
-
-    function showPrevLightbox() {
-      lightboxIndex = (lightboxIndex - 1 + galleryImages.length) % galleryImages.length;
-      updateLightbox();
-    }
-
     function setupCarousel(totalImages) {
       const track = document.getElementById('carousel-track');
       const prevBtn = document.getElementById('prev-btn');
@@ -338,20 +280,15 @@
       });
     }
 
-    document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
-    document.getElementById('lightbox-next').addEventListener('click', showNextLightbox);
-    document.getElementById('lightbox-prev').addEventListener('click', showPrevLightbox);
-    document.getElementById('lightbox-overlay').addEventListener('click', (event) => {
-      if (event.target === event.currentTarget) {
-        closeLightbox();
-      }
-    });
+    function attachCarouselClickHandlers() {
+      document.querySelectorAll('.carousel-slide img').forEach((img, index) => {
+        img.style.cursor = 'zoom-in';
+        img.addEventListener('click', () => Utils.Lightbox.open(galleryImages.map(img => ({ url: img.image_url, title: img.alt_text })), index));
+      });
+    }
 
     document.addEventListener('keydown', (event) => {
-      if (!document.getElementById('lightbox-overlay').classList.contains('active')) return;
-      if (event.key === 'Escape') closeLightbox();
-      if (event.key === 'ArrowRight') showNextLightbox();
-      if (event.key === 'ArrowLeft') showPrevLightbox();
+      // Logic moved to Utils.Lightbox
     });
 
     function showError(message) {

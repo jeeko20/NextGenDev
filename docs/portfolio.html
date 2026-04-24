@@ -99,7 +99,7 @@
             </div>
             <div class="portfolio-body">
               <h3>${item.title}</h3>
-              <p>${item.description}</p>
+              <p>${Utils.truncate(item.description, 120)}</p>
               <div class="portfolio-tags">
                 ${(item.technologies || []).slice(0, 4).map(t => `<span class="portfolio-tag">${t}</span>`).join('')}
               </div>
@@ -134,7 +134,3 @@
   </script>
 </body>
 </html>
-
-
-
-

@@ -1031,8 +1031,11 @@ input, textarea, select {
 /* --- Gallery Grid --- */
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
 .gallery-item {
@@ -1040,17 +1043,9 @@ input, textarea, select {
   border-radius: var(--radius-md);
   overflow: hidden;
   cursor: pointer;
-  aspect-ratio: 1;
-}
-
-.gallery-item.tall {
-  grid-row: span 2;
-  aspect-ratio: auto;
-}
-
-.gallery-item.wide {
-  grid-column: span 2;
-  aspect-ratio: 16 / 9;
+  width: 100%;
+  aspect-ratio: 1; /* Carré parfait */
+  min-height: 280px;
 }
 
 .gallery-item img {
@@ -1058,6 +1053,7 @@ input, textarea, select {
   height: 100%;
   object-fit: cover;
   transition: transform 0.4s ease;
+  display: block;
 }
 
 .gallery-item:hover img {
@@ -1091,6 +1087,27 @@ input, textarea, select {
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--blanc);
+}
+
+@media (max-width: 900px) {
+  .gallery-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .gallery-item {
+    min-height: 240px;
+  }
+}
+
+@media (max-width: 600px) {
+  .gallery-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .gallery-item {
+    min-height: 220px;
+  }
 }
 
 /* --- Lightbox --- */
@@ -2295,4 +2312,27 @@ input, textarea, select {
     color: var(--blanc);
     display: block;
   }
+}
+
+/* Forcer l'affichage des éléments de la galerie */
+.gallery-item,
+.gallery-item img,
+.gallery-grid .gallery-item {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: block !important;
+  transform: none !important;
+}
+
+.gallery-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+  gap: 16px !important;
+}
+
+.gallery-item img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
 }

@@ -15,6 +15,10 @@ if (typeof lucide !== 'undefined' && !lucide.__patched) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Define components first
+  defineNavComponent();
+  defineFooterComponent();
+
   // Initialize Lucide icons
   if (typeof lucide !== 'undefined') {
     lucide.createIcons();
@@ -30,13 +34,9 @@ document.addEventListener('DOMContentLoaded', () => {
     Auth.updateUI();
   }
   
-  // Initialize bottom nav
+  // Initialize navigations
   initBottomNav();
-  
-  // Initialize mobile menu
   initMobileMenu();
-  
-  // Set active navigation
   setActiveNav();
 });
 
@@ -103,10 +103,6 @@ function setActiveNav() {
     }
   });
 }
-
-// Navigation template injection
-defineNavComponent();
-defineFooterComponent();
 
 function defineNavComponent() {
   const navTemplate = `
