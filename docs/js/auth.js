@@ -67,7 +67,7 @@ class Auth {
   
   static logout() {
     this.removeToken();
-    window.location.href = '/';
+    window.location.href = '/docs/login.html';
   }
   
   static async checkAuth() {
