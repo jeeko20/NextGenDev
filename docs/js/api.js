@@ -4,7 +4,8 @@
 
 // Décommentez la ligne ci-dessous si vous voulez tester avec le serveur local
 // const API_BASE_URL = 'http://localhost:5000/api';
-const API_BASE_URL = 'https://nextgendev-n85n.onrender.com/api';
+//const API_BASE_URL = 'https://nextgendev-n85n.onrender.com/api';
+const API_BASE_URL = 'https://nextgendev-sskc.onrender.com/api';
 
 class API {
   static delay(ms) {
