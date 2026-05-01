@@ -181,6 +181,8 @@ def update_portfolio(id):
 @jwt_required()
 def delete_portfolio(id):
     portfolio = Portfolio.query.get_or_404(id)
+    # Delete associated images first
+    PortfolioImage.query.filter_by(portfolio_id=id).delete()
     db.session.delete(portfolio)
     db.session.commit()
     return jsonify({'message': 'Portfolio supprimé avec succès'}), 200
